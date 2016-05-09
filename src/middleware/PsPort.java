@@ -10,35 +10,11 @@ import java.net.MulticastSocket;
 public class PsPort {
 	
 	MulticastSocket conexion;
-	int port;
+	int port, len[] = new int[5];
 	String ipMulticast[] = new String[5];
 	
 	PsPort(String direccionFichero){
-		int id = -1, cont = 0;
-		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
-		    String line;
-		    while ((line = br.readLine()) != null) {
-		    	String split[] = line.split("=");
-		    	switch(cont){
-		    	case 0:
-		    		port = Integer.valueOf(split[1]);
-		    		cont++;
-		    		break;
-		    	case 1:
-		    		id = Integer.valueOf(split[1]);
-		    		cont++;
-		    		break;
-		    	case 2:
-		    		ipMulticast[id] = split[1];
-		    		cont--;
-		    		break;
-		    	default:
-		    		break;
-		    	}
-		    }
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		inicializarConfiguracion(direccionFichero);
 	}
 
 	boolean publish(int idData, byte data[], int len){
@@ -46,7 +22,6 @@ public class PsPort {
 		
 		try {
 			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast[idData]);
-			System.out.println(ipMulticast[idData]);
 			
 			byte mensaje[] = crearMenesaje(idData, data);
 			
@@ -62,6 +37,26 @@ public class PsPort {
 		
 		return enviado;
 	}
+
+	boolean getLastSample(int idData, byte data[], int len){
+		return false;
+	}
+	
+	boolean start(){
+		boolean ret;
+		try {
+			conexion = new MulticastSocket();
+			ret = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			ret = false;
+		}
+		return ret;
+	}
+	
+	void close(){
+		conexion.close();
+	}
 	
 	private byte[] crearMenesaje(int idData, byte[] data) {
 		byte [] mensaje;
@@ -76,21 +71,40 @@ public class PsPort {
 		return combined;
 	}
 
-	boolean getLastSample(int idData, byte data[], int len){
-		return false;
-	}
-	
-	void start(){
-		try {
-			conexion = new MulticastSocket();
+	private void inicializarConfiguracion(String direccionFichero) {
+		int id = -1, cont = 0;
+		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
+		    String line;
+		    String split[];
+		    while ((line = br.readLine()) != null) {
+		    	try{
+		    		 split = line.split("=");
+		    		 switch(cont){
+				    	case 0:
+				    		port = Integer.valueOf(split[1]);
+				    		cont++;
+				    		break;
+				    	case 1:
+				    		id = Integer.valueOf(split[1]);
+				    		cont++;
+				    		break;
+				    	case 2:
+				    		ipMulticast[id] = split[1];
+				    		cont++;
+				    		break;
+				    	case 3:
+				    		len[id] = Integer.valueOf(split[1]);
+				    		cont = 1;
+				    		break;
+				    	default:
+				    		break;
+				    	}
+		    	}catch(ArrayIndexOutOfBoundsException e){}		    	
+		    }
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	void close(){
-		conexion.close();
-	}
-
 }
 
