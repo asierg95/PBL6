@@ -14,14 +14,14 @@ public class Suscriber {
 
 		conexion.joinGroup(grupoMulticast);
 		
-		byte datos[] = new byte[20];
-		DatagramPacket paquete = new DatagramPacket(datos, datos.length);
 		String dato;
 
 		while(!exit){
+			byte datos[] = new byte[20];
+			DatagramPacket paquete = new DatagramPacket(datos, datos.length);
 			conexion.receive(paquete);
 			dato = new String (paquete.getData(), "UTF-8");
-			System.out.println("Dato: " +dato +" longitud meirda:"+dato.length() + "IP: "+paquete.getAddress());
+			System.out.println("Dato: " +dato +" longitud:"+dato.length() + " IP: "+paquete.getAddress());
 		}
 		
 		conexion.leaveGroup(grupoMulticast);

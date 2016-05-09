@@ -10,19 +10,17 @@ public class Publisher {
 	
 	public static void main(String[] args) throws IOException {
 		
-		int port = 6868;
-		String ipMulticast = "225.4.5.6";
+		String fichConfig = "middleware.conf", mensaje = "456";
+		PsPortFactory pFactory = new PsPortFactory();
+		PsPort pPort;
 		
-		InetAddress grupoMulticast = InetAddress.getByName(ipMulticast);		
-		MulticastSocket conexion = new MulticastSocket();
+		pPort = pFactory.getPort(fichConfig);
 		
-		String mensaje = "Prueba multicast";
-		byte [] datos = mensaje.getBytes();		
-		int lenght = datos.length;
-
-		DatagramPacket paquete = new DatagramPacket(datos, lenght,grupoMulticast , port);
-		conexion.send(paquete);
-
-		conexion.close();
+		pPort.start();
+		if(pPort.publish(1, mensaje.getBytes(), 8)){
+			//System.out.println("Mensaje enviado correctamente");
+		}else{
+			System.out.println("Error al enviar");
+		};
 	}
 }
