@@ -9,11 +9,16 @@ public class PsPort {
 	
 	MulticastSocket conexion;
 	String direccionFichero;
-	String [] datos;
-	
+	String [] datos, ipMulticast;
+	int dataLenght, port;
+	//ArrayList<Integer> dataLenght;
+	InetAddress grupoMulticast[];
+	boolean exit;
+			
 	PsPort(String direccionFichero){
 		this.direccionFichero = direccionFichero;
 		datos = new String [5];
+		ipMulticast = new String [5];
 	}
 
 	public boolean publish(int idData, byte data[], int len){
@@ -21,40 +26,32 @@ public class PsPort {
 	}
 	
 	public String getLastSample(int idData, byte data[], int len){
-		//if(datos.length == len){
+		//if(datos[idData].length() == len){
 			return datos[idData];
 		//}else{return "-1";}
 	}
 	
-	/*Funcion start
-	 * es una primera prueba
-	 * para la segunda prueba se leera lo necesario del fichero y en la funcion start creara un hilo
-	 * para cada dato que sestara escuchando y guardando el utimo dato recibido.
-	 * La 3. version pensarla
-	 */
-	public void start() throws IOException{
-		boolean exit = false;
-		
-		int port = 6868; //leer de fichero
-		String ipMulticast = "225.4.5.6"; //leer de fichero la ipMulticast de los datos
-		int longitud = 20; //leer de fichero
-		conexion = new MulticastSocket(port);
-		InetAddress grupoMulticast = InetAddress.getByName(ipMulticast);
+	public void start(){
+		exit = false;
 
-		conexion.joinGroup(grupoMulticast);
-		
-		byte datoSocket[] = new byte[longitud];
-		DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
-		
+		leerFichero();
+		crearConexion();
+		suscribirDato(0);
+		suscribirDato(1);
+		escuchar();
+	}
+	
+	private void escuchar() {
 		Thread leerDato = new Thread() {
 			public void run() {
 				while(!exit){
-					
 					try {
+						byte datoSocket[] = new byte[dataLenght];
+						DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 						conexion.receive(paquete);
 						String dato = new String (paquete.getData(), "UTF-8");
-						datos[0] = dato;
-						System.out.println("Dato: " +dato +" longitud:"+dato.length() + "IP: "+paquete.getAddress());
+						String [] mensaje = dato.split("=");
+						datos[Integer.valueOf(mensaje[0])] = mensaje[1];
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -63,8 +60,36 @@ public class PsPort {
 		};
 		leerDato.start();
 	}
-	
+
+	public void suscribirDato(int idDato) {
+		try {
+			grupoMulticast [idDato] = InetAddress.getByName(ipMulticast[idDato]);
+			conexion.joinGroup(grupoMulticast[idDato]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void leerFichero() {
+		port = 6868;
+		ipMulticast[0] = "225.4.5.6";
+		ipMulticast[1] = "225.4.5.7";
+		dataLenght = 20;
+	}
+
+	private void crearConexion() {
+		try {
+			conexion = new MulticastSocket(port);
+			grupoMulticast = new InetAddress[5];
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void close(){
+		exit = true;
 		//conexion.leaveGroup(grupoMulticast);
 		conexion.close();
 	}
