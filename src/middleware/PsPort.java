@@ -60,7 +60,7 @@ public class PsPort {
 	
 	private byte[] crearMenesaje(int idData, byte[] data) {
 		byte [] mensaje;
-		String id = String.valueOf(idData) + '$';
+		String id = String.valueOf(idData) + '=';
 		mensaje = id.getBytes();
 
 		byte[] combined = new byte[data.length + mensaje.length];
