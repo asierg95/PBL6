@@ -1,23 +1,24 @@
 package middleware;
 
-
-import java.io.IOException;
-
 public class Publisher {
 	
-	public static void main(String[] args) throws IOException {
-		
-		String fichConfig = "middleware.conf", mensaje = "77777777";
+	PsPort pPort;
+
+	public void iniciarConexion() {
+		String fichConfig = "middleware.conf";
 		PsPortFactory pFactory = new PsPortFactory();
-		PsPort pPort;
 		
-		pPort = pFactory.getPort(fichConfig);
-		
+		pPort = pFactory.getPort(fichConfig);		
 		pPort.start();
-		if(pPort.publish(1, mensaje.getBytes(), 8)){
+		
+	}
+
+	public void send(int id, String mensaje) {
+		if(pPort.publish(id, mensaje.getBytes(), 8)){
 			System.out.println("Mensaje enviado correctamente");
 		}else{
 			System.out.println("Error al enviar");
 		};
-	}
+	}	
+	
 }

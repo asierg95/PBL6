@@ -10,8 +10,9 @@ import java.net.MulticastSocket;
 
 public class PsPort {
 	
-	final int MAXLENGHT = 100;
-	
+	final static int MAXLENGHT = 100;
+	final static int ENCABEZADOMENSAJE = 2;
+
 	MulticastSocket conexion;
 	int port, len[] = new int[5];
 	String ipMulticast[] , datos[];
@@ -40,7 +41,7 @@ public class PsPort {
 			
 			byte mensaje[] = crearMensaje(idData, data);
 			
-			DatagramPacket paquete = new DatagramPacket(mensaje, mensaje.length, grupoMulticast , port);
+			DatagramPacket paquete = new DatagramPacket(mensaje, len + ENCABEZADOMENSAJE, grupoMulticast , port);
 			conexion.send(paquete);
 			
 			enviado = true;
