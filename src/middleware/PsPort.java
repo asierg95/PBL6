@@ -10,11 +10,23 @@ import java.net.MulticastSocket;
 public class PsPort {
 	
 	MulticastSocket conexion;
-	int port, len[] = new int[5];
-	String ipMulticast[] = new String[5];
-	
+	int port, len[] = new int[5], dataLenght;
+	String ipMulticast[] , datos[];
+	//ArrayList<Integer> dataLenght;
+	InetAddress grupoMulticast[];
+	boolean exit;
+			
 	PsPort(String direccionFichero){
-		inicializarConfiguracion(direccionFichero);
+		//inicializarConfiguracion(direccionFichero);
+		datos = new String [5];
+		ipMulticast = new String [5];
+		grupoMulticast = new InetAddress[5];
+	}
+	
+	public String getLastSample(int idData, byte data[], int len){
+		//if(datos[idData].length() == len){
+			return datos[idData];
+		//}else{return "-1";}
 	}
 
 	boolean publish(int idData, byte data[], int len){
@@ -37,24 +49,17 @@ public class PsPort {
 		
 		return enviado;
 	}
+	
+	public void start(){
+		exit = false;
 
-	boolean getLastSample(int idData, byte data[], int len){
-		return false;
+		leerFichero();
+		crearConexion();
 	}
-	
-	boolean start(){
-		boolean ret;
-		try {
-			conexion = new MulticastSocket();
-			ret = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			ret = false;
-		}
-		return ret;
-	}
-	
-	void close(){
+
+	public void close(){
+		exit = true;
+		//conexion.leaveGroup(grupoMulticast);
 		conexion.close();
 	}
 	
@@ -70,8 +75,25 @@ public class PsPort {
 		
 		return combined;
 	}
+	
+	private void leerFichero() {
+		port = 6868;
+		ipMulticast[0] = "225.4.5.6";
+		ipMulticast[1] = "225.4.5.7";
+		dataLenght = 10;
+	}
 
-	private void inicializarConfiguracion(String direccionFichero) {
+	private void crearConexion() {
+		try {
+			conexion = new MulticastSocket(port);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * private void inicializarConfiguracion(String direccionFichero) {
 		int id = -1, cont = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
 		    String line;
@@ -101,6 +123,36 @@ public class PsPort {
 				    	}
 		    	}catch(ArrayIndexOutOfBoundsException e){}		    	
 		    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
+	
+	public void escuchar() {
+		Thread leerDato = new Thread() {
+			public void run() {
+				while(!exit){
+					try {
+						byte datoSocket[] = new byte[dataLenght];
+						DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
+						conexion.receive(paquete);
+						String dato = new String (paquete.getData(), "UTF-8");
+						String [] mensaje = dato.split("=");
+						datos[Integer.valueOf(mensaje[0])] = mensaje[1];
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		leerDato.start();
+	}
+	
+	public void suscribirDato(int idDato) {
+		try {
+			grupoMulticast [idDato] = InetAddress.getByName(ipMulticast[idDato]);
+			conexion.joinGroup(grupoMulticast[idDato]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
