@@ -13,8 +13,8 @@ public class Publisher {
 		
 	}
 
-	public void send(int id, String mensaje) {
-		if(pPort.publish(id, mensaje.getBytes(), 8)){
+	public void send(int id, String mensaje, int len) {
+		if(pPort.publish(id, mensaje.getBytes(), len)){
 			System.out.println("Mensaje enviado correctamente");
 		}else{
 			System.out.println("Error al enviar");

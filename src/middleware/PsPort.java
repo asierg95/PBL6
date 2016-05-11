@@ -37,7 +37,7 @@ public class PsPort {
 			
 			byte mensaje[] = crearMensaje(idData, data);
 			
-			DatagramPacket paquete = new DatagramPacket(mensaje, len + ENCABEZADOMENSAJE, grupoMulticast , port);
+			DatagramPacket paquete = new DatagramPacket(mensaje, (len+ENCABEZADOMENSAJE), grupoMulticast , port);
 			conexion.send(paquete);
 			
 			enviado = true;
