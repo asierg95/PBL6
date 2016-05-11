@@ -8,7 +8,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class PsPort {
-	
+	final static int ENCABEZADOMENSAJE = 2;
 	MulticastSocket conexion;
 	int port, len[] = new int[5];
 	String ipMulticast[] , datos[];
@@ -35,9 +35,9 @@ public class PsPort {
 		try {
 			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast[idData]);
 			
-			byte mensaje[] = crearMenesaje(idData, data);
+			byte mensaje[] = crearMensaje(idData, data);
 			
-			DatagramPacket paquete = new DatagramPacket(mensaje, mensaje.length, grupoMulticast , port);
+			DatagramPacket paquete = new DatagramPacket(mensaje, len + ENCABEZADOMENSAJE, grupoMulticast , port);
 			conexion.send(paquete);
 			
 			enviado = true;
@@ -63,7 +63,7 @@ public class PsPort {
 		conexion.close();
 	}
 	
-	private byte[] crearMenesaje(int idData, byte[] data) {
+	private byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
 		String id = String.valueOf(idData) + '=';
 		mensaje = id.getBytes();
@@ -75,13 +75,6 @@ public class PsPort {
 		
 		return combined;
 	}
-	
-	/*private void leerFichero() {
-		port = 6868;
-		ipMulticast[0] = "225.4.5.6";
-		ipMulticast[1] = "225.4.5.7";
-		dataLenght = 10;
-	}*/
 
 	private void crearConexion() {
 		try {
