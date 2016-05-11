@@ -1,31 +1,32 @@
 package middleware;
 
-import java.io.IOException;
-import java.net.*;
-
 public class Suscriber {
+	PsPortFactory conexion;
+	PsPort port;
+	
+	/*public Suscriber(String direccionFicheroConfiguracion){
+		iniciarConexion(direccionFicheroConfiguracion);
+	}*/
 
-	public static void main(String[] args) throws IOException {
-		boolean exit = false;
-		int port = 6868;
-		String ipMulticast = "225.4.5.6";
-		MulticastSocket conexion = new MulticastSocket(port);
-		InetAddress grupoMulticast = InetAddress.getByName(ipMulticast);
-
-		conexion.joinGroup(grupoMulticast);
-		
-		String dato;
-
-		while(!exit){
-			byte datos[] = new byte[20];
-			DatagramPacket paquete = new DatagramPacket(datos, datos.length);
-			conexion.receive(paquete);
-			dato = new String (paquete.getData(), "UTF-8");
-			System.out.println("Dato: " +dato +" longitud:"+dato.length() + " IP: "+paquete.getAddress());
-		}
-		
-		conexion.leaveGroup(grupoMulticast);
-		conexion.close();
+	public void iniciarConexion(String direccionFicheroConfiguracion) {
+		conexion = new PsPortFactory();
+		port = conexion.getPort(direccionFicheroConfiguracion);
+		port.start();
 	}
+
+	public void suscribirseADato(int idDato) {
+		port.suscribirDato(idDato);		
+	}
+	
+	public String obtenerDato(int idDato, int lenght){
+		String dato = port.getLastSample(idDato, null, lenght);
+		return dato;
+	}
+	
+	public void escuchar(){
+		port.escuchar();
+	}
+	
+	
 
 }

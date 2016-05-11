@@ -2,25 +2,26 @@ package demo;
 
 import java.io.IOException;
 
-import middleware.PsPort;
-import middleware.PsPortFactory;
+import middleware.Suscriber;
 
 public class Receptor {
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		PsPortFactory conexion = new PsPortFactory();
-		PsPort port = conexion.getPort("middleware.conf");
+		String ficheroConfiguracion = "middleware.conf";
+		Suscriber suscriptor = new Suscriber();
 		
-		port.start();
-		port.suscribirDato(0);
-		port.suscribirDato(1);
-		port.escuchar();
+		suscriptor.iniciarConexion(ficheroConfiguracion);
+		
+		suscriptor.suscribirseADato(0);
+		suscriptor.suscribirseADato(1);
+		
+		suscriptor.escuchar();
 		
 		while(true){
 			Thread.sleep(6000);
-			String dato1 = port.getLastSample(0, null, 4);
+			String dato1 = suscriptor.obtenerDato(0, 4);
 			System.out.println("Receptor recibe: "+dato1);
-			String dato2 = port.getLastSample(1, null, 4);
+			String dato2 = suscriptor.obtenerDato(1, 4);
 			System.out.println("Receptor2 recibe: "+dato2);
 		}
 	}

@@ -3,12 +3,16 @@ package middleware;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class PsPort {
+	
+	final static int MAXLENGHT = 100;
 	final static int ENCABEZADOMENSAJE = 2;
+
 	MulticastSocket conexion;
 	int port, len[] = new int[5];
 	String ipMulticast[] , datos[];
@@ -52,8 +56,6 @@ public class PsPort {
 	
 	public void start(){
 		exit = false;
-
-		//leerFichero();
 		crearConexion();
 	}
 
@@ -125,15 +127,26 @@ public class PsPort {
 			public void run() {
 				while(!exit){
 					try {
-						byte datoSocket[] = new byte[len[0]];
+						byte datoSocket[] = new byte[MAXLENGHT];
 						DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 						conexion.receive(paquete);
-						String dato = new String (paquete.getData(), "UTF-8");
-						String [] mensaje = dato.split("=");
-						datos[Integer.valueOf(mensaje[0])] = mensaje[1];
+												
+						guardarMensaje(paquete);
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+				}
+			}
+
+			private void guardarMensaje(DatagramPacket paquete) {
+				String dato;
+				try {
+					dato = new String (paquete.getData(), "UTF-8");
+					String [] mensaje = dato.split("=");
+					datos[Integer.valueOf(mensaje[0])] = mensaje[1];
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
 				}
 			}
 		};
