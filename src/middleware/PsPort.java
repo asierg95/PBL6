@@ -10,17 +10,17 @@ import java.net.MulticastSocket;
 public class PsPort {
 	
 	MulticastSocket conexion;
-	int port, len[] = new int[5], dataLenght;
+	int port, len[] = new int[5];
 	String ipMulticast[] , datos[];
 	//ArrayList<Integer> dataLenght;
 	InetAddress grupoMulticast[];
 	boolean exit;
 			
 	PsPort(String direccionFichero){
-		//inicializarConfiguracion(direccionFichero);
 		datos = new String [5];
 		ipMulticast = new String [5];
 		grupoMulticast = new InetAddress[5];
+		inicializarConfiguracion(direccionFichero);		
 	}
 	
 	public String getLastSample(int idData, byte data[], int len){
@@ -53,7 +53,7 @@ public class PsPort {
 	public void start(){
 		exit = false;
 
-		leerFichero();
+		//leerFichero();
 		crearConexion();
 	}
 
@@ -76,12 +76,12 @@ public class PsPort {
 		return combined;
 	}
 	
-	private void leerFichero() {
+	/*private void leerFichero() {
 		port = 6868;
 		ipMulticast[0] = "225.4.5.6";
 		ipMulticast[1] = "225.4.5.7";
 		dataLenght = 10;
-	}
+	}*/
 
 	private void crearConexion() {
 		try {
@@ -91,9 +91,8 @@ public class PsPort {
 			e.printStackTrace();
 		}
 	}
-
-	/*
-	 * private void inicializarConfiguracion(String direccionFichero) {
+	
+	private void inicializarConfiguracion(String direccionFichero) {
 		int id = -1, cont = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
 		    String line;
@@ -127,14 +126,13 @@ public class PsPort {
 			e.printStackTrace();
 		}
 	}
-	*/
 	
 	public void escuchar() {
 		Thread leerDato = new Thread() {
 			public void run() {
 				while(!exit){
 					try {
-						byte datoSocket[] = new byte[dataLenght];
+						byte datoSocket[] = new byte[len[0]];
 						DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 						conexion.receive(paquete);
 						String dato = new String (paquete.getData(), "UTF-8");
