@@ -9,3 +9,4 @@ Socket connection middleware
 - [ ] Implements the demonstrative garage application
 - [ ] Integrate the demonstrative application and the middlware
 - [ ] Integrate middlware security
+- [ ] JUnit test
