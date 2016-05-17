@@ -11,7 +11,7 @@ public class Emisor {
 		Publisher publicador = new Publisher();
 		boolean exit = false;
 		Scanner teclado = new Scanner(System.in);
-		int id, len;
+		int id, len, respuesta;
 		
 		publicador.iniciarConexion();
 		
@@ -22,7 +22,7 @@ public class Emisor {
 			id = Integer.valueOf(teclado.next());
 			System.out.println("Cual es la longitud del dato?");
 			len = Integer.valueOf(teclado.next());
-			publicador.send(id, mensaje, len);
+			respuesta = publicador.send(id, mensaje, len);
 		}
 		
 	}
