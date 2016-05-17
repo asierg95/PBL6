@@ -19,6 +19,7 @@ public class DataReader extends Thread{
 		this.separadorMensaje = separadorMensaje;
 	}
 	
+	@Override
 	public void run() {
 		while(!exit){
 			try {
@@ -35,10 +36,10 @@ public class DataReader extends Thread{
 	}
 
 	private void guardarMensaje(DatagramPacket paquete) {
-		String mensaje = null;
-		int idDato = 0;
+		String mensaje;
+		int idDato;
 		byte [] datoByte;
-		int longitudDato = 0;
+		int longitudDato;
 		byte [] datoByteCompleto;
 		String [] arrayMensaje;
 		
