@@ -3,7 +3,6 @@ package middleware;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -12,6 +11,7 @@ public class PsPort {
 	
 	final static int MAXLENGHT = 100;
 	final static int ENCABEZADOMENSAJE = 2;
+	final static String SEPARADORMENSAJE = "=";
 
 	MulticastSocket conexion;
 	int port, len[] = new int[5];
@@ -43,7 +43,6 @@ public class PsPort {
 			
 			DatagramPacket paquete = new DatagramPacket(mensaje, (len+ENCABEZADOMENSAJE), grupoMulticast , port);
 			conexion.send(paquete);
-			
 			enviado = true;
 
 		} catch (IllegalArgumentException | IOException e) {
@@ -66,7 +65,7 @@ public class PsPort {
 	
 	private byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
-		String id = String.valueOf(idData) + '=';
+		String id = String.valueOf(idData) + SEPARADORMENSAJE;
 		mensaje = id.getBytes();
 
 		byte[] combined = new byte[data.length + mensaje.length];
@@ -80,7 +79,6 @@ public class PsPort {
 	private void crearConexion() {
 		try {
 			conexion = new MulticastSocket(port);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -93,7 +91,7 @@ public class PsPort {
 		    String split[];
 		    while ((line = br.readLine()) != null) {
 		    	try{
-		    		 split = line.split("=");
+		    		 split = line.split(SEPARADORMENSAJE);
 		    		 switch(cont){
 				    	case 0:
 				    		port = Integer.valueOf(split[1]);
@@ -122,34 +120,8 @@ public class PsPort {
 	}
 	
 	public void escuchar() {
-		Thread leerDato = new Thread() {
-			public void run() {
-				while(!exit){
-					try {
-						byte datoSocket[] = new byte[MAXLENGHT];
-						DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
-						conexion.receive(paquete);
-												
-						guardarMensaje(paquete);
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-			private void guardarMensaje(DatagramPacket paquete) {
-				String dato;
-				try {
-					dato = new String (paquete.getData(), "UTF-8");
-					String [] mensaje = dato.split("=");
-					datos[Integer.valueOf(mensaje[0])] = mensaje[1];
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		leerDato.start();
+		DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE);
+		dataReader.start();
 	}
 	
 	public void suscribirDato(int idDato) {
@@ -160,6 +132,12 @@ public class PsPort {
 			e.printStackTrace();
 		}
 	}
+
+	public void guardarDato(int idDato, String mensaje) {
+		datos[idDato] = mensaje;
+	}
+	
+	
 	
 }
 
