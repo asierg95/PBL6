@@ -46,9 +46,8 @@ public class PsPort {
 			
 			enviado = true;
 
-		} catch (IOException e) {
+		} catch (IllegalArgumentException | IOException e) {
 			enviado = false;
-			e.printStackTrace();
 		}
 		
 		return enviado;
