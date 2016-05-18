@@ -31,7 +31,7 @@ public class Publisher {
 	 */
 	public int send(int id, String mensaje, int len) {
 		int resultado;
-		if(len != pPort.len[id]){
+		if(len == pPort.dataLenght.get(id)){
 			if(pPort.publish(id, mensaje.getBytes(), len)){
 				resultado = 0;
 			}else{

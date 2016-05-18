@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Puerto de la conexión socket
@@ -19,10 +21,13 @@ public class PsPort {
 	final static String SEPARADORMENSAJE = "=";
 
 	MulticastSocket conexion;
-	int port, len[] = new int[5];
-	String ipMulticast[] , datos[];
-	//ArrayList<Integer> dataLenght;
-	InetAddress grupoMulticast[];
+	int port;
+	
+	ArrayList<String> ipMulticast;
+	ArrayList<String> datos;
+	ArrayList<Integer> dataLenght;
+	ArrayList<InetAddress> grupoMulticast;
+
 	boolean exit;
 		
 	/**
@@ -30,9 +35,12 @@ public class PsPort {
 	 * @param direccionFichero direccion del fichero de configuracion
 	 */
 	PsPort(String direccionFichero){
-		datos = new String [5];
-		ipMulticast = new String [5];
-		grupoMulticast = new InetAddress[5];
+		
+		dataLenght = new ArrayList<Integer>(Collections.nCopies(60, 0));
+		ipMulticast = new ArrayList<String>(Collections.nCopies(60, ""));
+		datos = new ArrayList<String>(Collections.nCopies(60, ""));
+		grupoMulticast = new ArrayList<InetAddress>(Collections.nCopies(60, null));
+		
 		inicializarConfiguracion(direccionFichero);		
 	}
 	
@@ -43,9 +51,12 @@ public class PsPort {
 	 * @return
 	 */
 	public String getLastSample(int idData, int len){
-		//if(datos[idData].length() == len){
-			return datos[idData];
-		//}else{return "-1";}
+		//System.out.println(datos.get(idData).length());
+		//if(datos.get(idData).length() == len){
+			return datos.get(idData);
+		//}else{
+		//	return "-1";
+		//}
 	}
 
 	/**
@@ -59,8 +70,7 @@ public class PsPort {
 		boolean enviado;
 		
 		try {
-			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast[idData]);
-			
+			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast.get(idData));
 			byte mensaje[] = crearMensaje(idData, data);
 			
 			DatagramPacket paquete = new DatagramPacket(mensaje, (len+ENCABEZADOMENSAJE), grupoMulticast , port);
@@ -126,10 +136,14 @@ public class PsPort {
 	 * @param direccionFichero fichero de configuracion
 	 */
 	private void inicializarConfiguracion(String direccionFichero) {
-		int id = -1, cont = 0;
+		int id = -1;
+		int cont = 0;
+		int longitud = 0;
+		String ip;
+		String line;
+	    String split[];
+	    
 		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
-		    String line;
-		    String split[];
 		    while ((line = br.readLine()) != null) {
 		    	try{
 		    		 split = line.split(SEPARADORMENSAJE);
@@ -143,11 +157,13 @@ public class PsPort {
 				    		cont++;
 				    		break;
 				    	case 2:
-				    		ipMulticast[id] = split[1];
+				    		ip = split[1];
+				    		ipMulticast.set(id, ip);
 				    		cont++;
 				    		break;
 				    	case 3:
-				    		len[id] = Integer.valueOf(split[1]);
+				    		longitud = Integer.valueOf(split[1]);
+				    		dataLenght.add(id, longitud);
 				    		cont = 1;
 				    		break;
 				    	default:
@@ -173,9 +189,13 @@ public class PsPort {
 	 * @param idDato id del dato al que se quiere suscribir
 	 */
 	public void suscribirADato(int idDato) {
+		InetAddress ip = null;
 		try {
-			grupoMulticast [idDato] = InetAddress.getByName(ipMulticast[idDato]);
-			conexion.joinGroup(grupoMulticast[idDato]);
+			
+			ip = InetAddress.getByName(ipMulticast.get(idDato));
+			grupoMulticast.set(idDato, ip);
+			conexion.joinGroup(grupoMulticast.get(idDato));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -187,7 +207,7 @@ public class PsPort {
 	 * @param mensaje el dato que se va a guardar
 	 */
 	public void guardarDato(int idDato, String mensaje) {
-		datos[idDato] = mensaje;
+		datos.set(idDato, mensaje);
 	}
 	
 	
