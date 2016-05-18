@@ -4,7 +4,7 @@ package middleware;
  * Clase utilizada para publicar datos haciendo uso del middleware.
  * @see #iniciarConexion()
  * @see #send(int, String, int)
- * @author Xabi
+ * @author Popbl6
  */
 public class Publisher {
 	

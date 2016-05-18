@@ -7,6 +7,11 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+/**
+ * Puerto de la conexión socket
+ * @author Popbl6
+ *
+ */
 public class PsPort {
 	
 	final static int MAXLENGHT = 100;
@@ -19,7 +24,11 @@ public class PsPort {
 	//ArrayList<Integer> dataLenght;
 	InetAddress grupoMulticast[];
 	boolean exit;
-			
+		
+	/**
+	 * Constructor PsPort
+	 * @param direccionFichero direccion del fichero de configuracion
+	 */
 	PsPort(String direccionFichero){
 		datos = new String [5];
 		ipMulticast = new String [5];
@@ -27,12 +36,25 @@ public class PsPort {
 		inicializarConfiguracion(direccionFichero);		
 	}
 	
-	public String getLastSample(int idData, byte data[], int len){
+	/**
+	 * Recoge ultimo dato publicado
+	 * @param idData id del dato que se quiere
+	 * @param len longitud del dato que se quiere
+	 * @return
+	 */
+	public String getLastSample(int idData, int len){
 		//if(datos[idData].length() == len){
 			return datos[idData];
 		//}else{return "-1";}
 	}
 
+	/**
+	 * Publica un dato
+	 * @param idData id del dato que se publica
+	 * @param data dato que se publica
+	 * @param len longitud del dato que se publica
+	 * @return enviado: true  no-enviado: false
+	 */
 	boolean publish(int idData, byte data[], int len){
 		boolean enviado;
 		
@@ -52,17 +74,29 @@ public class PsPort {
 		return enviado;
 	}
 	
+	/**
+	 * Crea la conexion
+	 */
 	public void start(){
 		exit = false;
 		crearConexion();
 	}
 
+	/**
+	 * Cierra la conexion
+	 */
 	public void close(){
 		exit = true;
 		//conexion.leaveGroup(grupoMulticast);
 		conexion.close();
 	}
 	
+	/**
+	 * Crear el mensaje que se va a publicar con el formato adecuado
+	 * @param idData id del dato que se va a publicar
+	 * @param data dato que se va a publicar
+	 * @return el mensaje combinado que se va a publicar
+	 */
 	private byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
 		String id = String.valueOf(idData) + SEPARADORMENSAJE;
@@ -76,6 +110,9 @@ public class PsPort {
 		return combined;
 	}
 
+	/**
+	 * Crea la conexion MulticastSocket
+	 */
 	private void crearConexion() {
 		try {
 			conexion = new MulticastSocket(port);
@@ -84,6 +121,10 @@ public class PsPort {
 		}
 	}
 	
+	/**
+	 * Inicializa el sistema con la configuracion del fichero
+	 * @param direccionFichero fichero de configuracion
+	 */
 	private void inicializarConfiguracion(String direccionFichero) {
 		int id = -1, cont = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
@@ -119,12 +160,19 @@ public class PsPort {
 		}
 	}
 	
+	/**
+	 * Escucha los datos que se estan publicando
+	 */
 	public void escuchar() {
 		DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE);
 		dataReader.start();
 	}
 	
-	public void suscribirDato(int idDato) {
+	/**
+	 * Se suscribe a un dato
+	 * @param idDato id del dato al que se quiere suscribir
+	 */
+	public void suscribirADato(int idDato) {
 		try {
 			grupoMulticast [idDato] = InetAddress.getByName(ipMulticast[idDato]);
 			conexion.joinGroup(grupoMulticast[idDato]);
@@ -133,6 +181,11 @@ public class PsPort {
 		}
 	}
 
+	/**
+	 * Guarda el dato para posteriormente poder leerlo
+	 * @param idDato id del dato que se va a guardar
+	 * @param mensaje el dato que se va a guardar
+	 */
 	public void guardarDato(int idDato, String mensaje) {
 		datos[idDato] = mensaje;
 	}
