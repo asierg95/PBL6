@@ -38,9 +38,9 @@ public class DataReader extends Thread{
 	}
 
 	private void ejecutar() {
-		byte datoSocket[] = new byte[maxLenght];
 		while(!exit){
 			try {
+				byte datoSocket[] = new byte[maxLenght];
 				DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 				conexion.receive(paquete);			
 				guardarMensaje(paquete);
