@@ -18,18 +18,22 @@ public class Suscriber {
 	 * Inicia la conexion socket con la configuracion recogida del fichero
 	 * @param direccionFicheroConfiguracion fichero de configuracion
 	 */
-	public void iniciarConexion(String direccionFicheroConfiguracion) {
+	public boolean iniciarConexion(String direccionFicheroConfiguracion) {
+		boolean respuesta = false;
 		conexion = new PsPortFactory();
 		port = conexion.getPort(direccionFicheroConfiguracion);
-		port.start();
+		respuesta = port.start();
+		return respuesta;
 	}
 
 	/**
 	 * Se suscribe a datos
 	 * @param idDato el id del dato al que se va a suscribir
 	 */
-	public void suscribirseADato(int idDato) {
-		port.suscribirADato(idDato);		
+	public boolean suscribirseADato(int idDato) {
+		boolean respuesta = false;
+		respuesta = port.suscribirADato(idDato);
+		return respuesta;
 	}
 	
 	/**
