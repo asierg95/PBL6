@@ -19,6 +19,10 @@ public class PsPort {
 	final static int MAXLENGHT = 100;
 	final static int ENCABEZADOMENSAJE = 2;
 	final static String SEPARADORMENSAJE = "=";
+	final static int PUERTO = 0;
+	final static int ID = 1;
+	final static int GRUPO = 2;
+	final static int LONGITUD = 3;
 
 	MulticastSocket conexion;
 	int port;
@@ -148,23 +152,23 @@ public class PsPort {
 		    	try{
 		    		 split = line.split(SEPARADORMENSAJE);
 		    		 switch(cont){
-				    	case 0:
+				    	case PUERTO:
 				    		port = Integer.valueOf(split[1]);
-				    		cont++;
+				    		cont = ID;
 				    		break;
-				    	case 1:
+				    	case ID:
 				    		id = Integer.valueOf(split[1]);
-				    		cont++;
+				    		cont = GRUPO;
 				    		break;
-				    	case 2:
+				    	case GRUPO:
 				    		ip = split[1];
 				    		ipMulticast.set(id, ip);
-				    		cont++;
+				    		cont = LONGITUD;
 				    		break;
-				    	case 3:
+				    	case LONGITUD:
 				    		longitud = Integer.valueOf(split[1]);
 				    		dataLenght.add(id, longitud);
-				    		cont = 1;
+				    		cont = ID;
 				    		break;
 				    	default:
 				    		break;
