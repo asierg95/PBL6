@@ -6,39 +6,74 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.Collections;
 
+/**
+ * Puerto de la conexión socket
+ * @author Popbl6
+ *
+ */
 public class PsPort {
 	
 	final static int MAXLENGHT = 100;
 	final static int ENCABEZADOMENSAJE = 2;
 	final static String SEPARADORMENSAJE = "=";
+	final static int PUERTO = 0;
+	final static int ID = 1;
+	final static int GRUPO = 2;
+	final static int LONGITUD = 3;
 
 	MulticastSocket conexion;
-	int port, len[] = new int[5];
-	String ipMulticast[] , datos[];
-	//ArrayList<Integer> dataLenght;
-	InetAddress grupoMulticast[];
+	int port;
+	
+	ArrayList<String> ipMulticast;
+	ArrayList<String> datos;
+	ArrayList<Integer> dataLenght;
+	ArrayList<InetAddress> grupoMulticast;
+
 	boolean exit;
-			
-	public PsPort(String direccionFichero){
-		datos = new String [5];
-		ipMulticast = new String [5];
-		grupoMulticast = new InetAddress[5];
+		
+	/**
+	 * Constructor PsPort
+	 * @param direccionFichero direccion del fichero de configuracion
+	 */
+	PsPort(String direccionFichero){
+		
+		dataLenght = new ArrayList<Integer>(Collections.nCopies(60, 0));
+		ipMulticast = new ArrayList<String>(Collections.nCopies(60, ""));
+		datos = new ArrayList<String>(Collections.nCopies(60, ""));
+		grupoMulticast = new ArrayList<InetAddress>(Collections.nCopies(60, null));
 		inicializarConfiguracion(direccionFichero);		
 	}
 	
-	public String getLastSample(int idData, byte data[], int len){
-		//if(datos[idData].length() == len){
-			return datos[idData];
-		//}else{return "-1";}
+	/**
+	 * Recoge ultimo dato publicado
+	 * @param idData id del dato que se quiere
+	 * @param len longitud del dato que se quiere
+	 * @return
+	 */
+	public String getLastSample(int idData, int len){
+		//System.out.println(datos.get(idData).length());
+		//if(datos.get(idData).length() == len){
+			return datos.get(idData);
+		//}else{
+		//	return "-1";
+		//}
 	}
 
+	/**
+	 * Publica un dato
+	 * @param idData id del dato que se publica
+	 * @param data dato que se publica
+	 * @param len longitud del dato que se publica
+	 * @return enviado: true  no-enviado: false
+	 */
 	boolean publish(int idData, byte data[], int len){
 		boolean enviado;
 		
 		try {
-			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast[idData]);
-			
+			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast.get(idData));
 			byte mensaje[] = crearMensaje(idData, data);
 			
 			DatagramPacket paquete = new DatagramPacket(mensaje, (len+ENCABEZADOMENSAJE), grupoMulticast , port);
@@ -52,18 +87,30 @@ public class PsPort {
 		return enviado;
 	}
 	
+	/**
+	 * Crea la conexion
+	 */
 	public void start(){
 		exit = false;
 		crearConexion();
 	}
 
+	/**
+	 * Cierra la conexion
+	 */
 	public void close(){
 		exit = true;
 		//conexion.leaveGroup(grupoMulticast);
 		conexion.close();
 	}
 	
-	public byte[] crearMensaje(int idData, byte[] data) {
+	/**
+	 * Crear el mensaje que se va a publicar con el formato adecuado
+	 * @param idData id del dato que se va a publicar
+	 * @param data dato que se va a publicar
+	 * @return el mensaje combinado que se va a publicar
+	 */
+	private byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
 		String id = String.valueOf(idData) + SEPARADORMENSAJE;
 		mensaje = id.getBytes();
@@ -76,6 +123,9 @@ public class PsPort {
 		return combined;
 	}
 
+	/**
+	 * Crea la conexion MulticastSocket
+	 */
 	private void crearConexion() {
 		try {
 			conexion = new MulticastSocket(port);
@@ -84,30 +134,40 @@ public class PsPort {
 		}
 	}
 	
+	/**
+	 * Inicializa el sistema con la configuracion del fichero
+	 * @param direccionFichero fichero de configuracion
+	 */
 	private void inicializarConfiguracion(String direccionFichero) {
-		int id = -1, cont = 0;
+		int id = -1;
+		int cont = 0;
+		int longitud = 0;
+		String ip;
+		String line;
+	    String split[];
+	    
 		try (BufferedReader br = new BufferedReader(new FileReader(direccionFichero))) {
-		    String line;
-		    String split[];
 		    while ((line = br.readLine()) != null) {
 		    	try{
 		    		 split = line.split(SEPARADORMENSAJE);
 		    		 switch(cont){
-				    	case 0:
+				    	case PUERTO:
 				    		port = Integer.valueOf(split[1]);
-				    		cont++;
+				    		cont = ID;
 				    		break;
-				    	case 1:
+				    	case ID:
 				    		id = Integer.valueOf(split[1]);
-				    		cont++;
+				    		cont = GRUPO;
 				    		break;
-				    	case 2:
-				    		ipMulticast[id] = split[1];
-				    		cont++;
+				    	case GRUPO:
+				    		ip = split[1];
+				    		ipMulticast.set(id, ip);
+				    		cont = LONGITUD;
 				    		break;
-				    	case 3:
-				    		len[id] = Integer.valueOf(split[1]);
-				    		cont = 1;
+				    	case LONGITUD:
+				    		longitud = Integer.valueOf(split[1]);
+				    		dataLenght.add(id, longitud);
+				    		cont = ID;
 				    		break;
 				    	default:
 				    		break;
@@ -119,22 +179,38 @@ public class PsPort {
 		}
 	}
 	
+	/**
+	 * Escucha los datos que se estan publicando
+	 */
 	public void escuchar() {
 		DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE);
 		dataReader.start();
 	}
 	
-	public void suscribirDato(int idDato) {
+	/**
+	 * Se suscribe a un dato
+	 * @param idDato id del dato al que se quiere suscribir
+	 */
+	public void suscribirADato(int idDato) {
+		InetAddress ip = null;
 		try {
-			grupoMulticast [idDato] = InetAddress.getByName(ipMulticast[idDato]);
-			conexion.joinGroup(grupoMulticast[idDato]);
+			
+			ip = InetAddress.getByName(ipMulticast.get(idDato));
+			grupoMulticast.set(idDato, ip);
+			conexion.joinGroup(grupoMulticast.get(idDato));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Guarda el dato para posteriormente poder leerlo
+	 * @param idDato id del dato que se va a guardar
+	 * @param mensaje el dato que se va a guardar
+	 */
 	public void guardarDato(int idDato, String mensaje) {
-		datos[idDato] = mensaje;
+		datos.set(idDato, mensaje);
 	}
 	
 	
