@@ -2,15 +2,11 @@ package tests;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.Socket;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import middleware.DataReader;
 import middleware.PsPort;
-
-import org.easymock.EasyMockSupport;
 
 public class PsPortTest {
 	PsPort port;
