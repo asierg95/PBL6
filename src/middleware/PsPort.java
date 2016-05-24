@@ -23,6 +23,7 @@ public class PsPort {
 	final static int ID = 1;
 	final static int GRUPO = 2;
 	final static int LONGITUD = 3;
+	final static int INTFALLO = -1;
 
 	MulticastSocket conexion;
 	int port;
@@ -143,7 +144,7 @@ public class PsPort {
 	 * @param direccionFichero fichero de configuracion
 	 */
 	public void inicializarConfiguracion(String direccionFichero) {
-		int id = -1;
+		int id = INTFALLO;
 		int cont = 0;
 		int longitud = 0;
 		String ip;
@@ -176,7 +177,9 @@ public class PsPort {
 				    	default:
 				    		break;
 				    	}
-		    	}catch(ArrayIndexOutOfBoundsException e){}		    	
+		    	}catch(ArrayIndexOutOfBoundsException e){
+		    		e.printStackTrace();
+		    	}		    	
 		    }
 		} catch (IOException e) {
 			e.printStackTrace();
