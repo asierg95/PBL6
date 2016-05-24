@@ -198,17 +198,19 @@ public class PsPort {
 	 * Se suscribe a un dato
 	 * @param idDato id del dato al que se quiere suscribir
 	 */
-	public void suscribirADato(int idDato) {
+	public boolean suscribirADato(int idDato) {
 		InetAddress ip = null;
+		boolean adecuadamenteSuscrito = false;
+		
 		try {
-			
 			ip = InetAddress.getByName(ipMulticast.get(idDato));
 			grupoMulticast.set(idDato, ip);
 			conexion.joinGroup(grupoMulticast.get(idDato));
-			
+			adecuadamenteSuscrito = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return adecuadamenteSuscrito;
 	}
 
 	/**
