@@ -20,7 +20,7 @@ public class PsPort {
 	InetAddress grupoMulticast[];
 	boolean exit;
 			
-	PsPort(String direccionFichero){
+	public PsPort(String direccionFichero){
 		datos = new String [5];
 		ipMulticast = new String [5];
 		grupoMulticast = new InetAddress[5];
@@ -63,7 +63,7 @@ public class PsPort {
 		conexion.close();
 	}
 	
-	private byte[] crearMensaje(int idData, byte[] data) {
+	public byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
 		String id = String.valueOf(idData) + SEPARADORMENSAJE;
 		mensaje = id.getBytes();
