@@ -48,18 +48,21 @@ public class PsPort {
 	}
 	
 	/**
-	 * Recoge ultimo dato publicado
-	 * @param idData id del dato que se quiere
-	 * @param len longitud del dato que se quiere
-	 * @return
+	 * Crea la conexion
 	 */
-	public String getLastSample(int idData, int len){
-		//System.out.println(datos.get(idData).length());
-		//if(datos.get(idData).length() == len){
-			return datos.get(idData);
-		//}else{
-		//	return "-1";
-		//}
+	public boolean start(){
+		boolean conexionIniciada = false;
+		exit = false;
+		conexionIniciada = crearConexion(port);
+		return conexionIniciada;
+	}
+
+	/**
+	 * Cierra la conexion
+	 */
+	public void close(){
+		exit = true;
+		conexion.close();
 	}
 
 	/**
@@ -69,7 +72,7 @@ public class PsPort {
 	 * @param len longitud del dato que se publica
 	 * @return enviado: true  no-enviado: false
 	 */
-	boolean publish(int idData, byte data[], int len){
+	public boolean publish(int idData, byte data[], int len){
 		boolean enviado;
 		
 		try {
@@ -88,20 +91,18 @@ public class PsPort {
 	}
 	
 	/**
-	 * Crea la conexion
+	 * Recoge ultimo dato publicado
+	 * @param idData id del dato que se quiere
+	 * @param len longitud del dato que se quiere
+	 * @return
 	 */
-	public void start(){
-		exit = false;
-		crearConexion();
-	}
-
-	/**
-	 * Cierra la conexion
-	 */
-	public void close(){
-		exit = true;
-		//conexion.leaveGroup(grupoMulticast);
-		conexion.close();
+	public String getLastSample(int idData, int len){
+		//System.out.println(datos.get(idData).length());
+		//if(datos.get(idData).length() == len){
+			return datos.get(idData);
+		//}else{
+		//	return "-1";
+		//}
 	}
 	
 	/**
@@ -110,7 +111,7 @@ public class PsPort {
 	 * @param data dato que se va a publicar
 	 * @return el mensaje combinado que se va a publicar
 	 */
-	private byte[] crearMensaje(int idData, byte[] data) {
+	public byte[] crearMensaje(int idData, byte[] data) {
 		byte [] mensaje;
 		String id = String.valueOf(idData) + SEPARADORMENSAJE;
 		mensaje = id.getBytes();
@@ -126,19 +127,22 @@ public class PsPort {
 	/**
 	 * Crea la conexion MulticastSocket
 	 */
-	private void crearConexion() {
+	public boolean crearConexion(int puertoConexion) {
+		boolean conexionCreada = false;
 		try {
-			conexion = new MulticastSocket(port);
+			conexion = new MulticastSocket(puertoConexion);
+			conexionCreada = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return conexionCreada;
 	}
 	
 	/**
 	 * Inicializa el sistema con la configuracion del fichero
 	 * @param direccionFichero fichero de configuracion
 	 */
-	private void inicializarConfiguracion(String direccionFichero) {
+	public void inicializarConfiguracion(String direccionFichero) {
 		int id = -1;
 		int cont = 0;
 		int longitud = 0;
