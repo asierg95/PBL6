@@ -13,13 +13,16 @@ public class Publisher {
 	/**
 	 * Crea una clase con los valores del fichero de configuración e inicia la conexion.
 	 */
-	public void iniciarConexion() {
-		String fichConfig = "middleware.conf";
+	public boolean iniciarConexion(String fichConfig) {
+		boolean respuesta;
+		
 		PsPortFactory pFactory = new PsPortFactory();
 		
 		pPort = pFactory.getPort(fichConfig);		
 		pPort.start();
+		respuesta = true;
 		
+		return respuesta;
 	}
 
 	/**
