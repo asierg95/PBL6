@@ -1,7 +1,6 @@
 package middleware;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
@@ -56,70 +55,15 @@ public class DataReader extends Thread{
 	 * @param paquete el paquete que contiene los datos que se van a almacenar
 	 */
 	private void guardarMensaje(DatagramPacket paquete) {
-		String mensaje;
-		int idDato;
 		byte [] datoByte;
 		int longitudDato;
 		byte [] datoByteCompleto;
-		String [] arrayMensaje;
 		
 		datoByteCompleto = paquete.getData();
 		longitudDato = longitudByteArray(datoByteCompleto);
 		datoByte = copiarByteArray(datoByteCompleto, longitudDato);
-		mensaje = byteArraytoString(datoByte);
-		arrayMensaje = separarString(mensaje, separadorMensaje);
-		idDato = leerIdDato(arrayMensaje);
-		mensaje = leerMensaje(arrayMensaje);
 		
-		port.guardarDato(idDato, mensaje);
-		
-	}
-
-	/**
-	 * Convierte un byteArray en String
-	 * @param datoByte el byteArray que se va a convertir en String
-	 * @return el mensaje convertido a String
-	 */
-	private String byteArraytoString(byte [] datoByte) {
-		String mensaje = null;
-		try {
-			mensaje = new String (datoByte, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return mensaje;
-	}
-
-	/**
-	 * Separa el dato del array de strings
-	 * @param arrayMensaje el array que contiene el idDato y el dato
-	 * @return el dato del array
-	 */
-	private String leerMensaje(String [] arrayMensaje) {
-		return arrayMensaje[1];
-	}
-
-	/**
-	 * Separa el idDato del array de strings
-	 * @param arrayMensaje el array que contiene el idDato y el dato
-	 * @return el idDato del array convertido a integer
-	 */
-	private int leerIdDato(String [] arrayMensaje) {
-		return Integer.valueOf(arrayMensaje[0]);
-	}
-
-	/**
-	 * Separa el un String en un array de String diviendolo con el separador
-	 * @param dato el String que se quiere dividir
-	 * @param separadormensaje el caracter que va a dividir las partes del String
-	 * @return String [] con los Strings separados
-	 */
-	private String[] separarString(String dato, String separadormensaje) {
-		String [] mensaje;
-		
-		mensaje = dato.split(separadormensaje);
-		
-		return mensaje;
+		port.guardarDato(datoByte);
 	}
 
 	/**
@@ -150,3 +94,4 @@ public class DataReader extends Thread{
 	}
 
 }
+
