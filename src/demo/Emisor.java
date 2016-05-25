@@ -12,8 +12,9 @@ public class Emisor {
 		boolean exit = false;
 		Scanner teclado = new Scanner(System.in);
 		int id, len, respuesta;
+		String fichConf = "middleware.conf";
 		
-		publicador.iniciarConexion();
+		publicador.iniciarConexion(fichConf);
 		
 		System.out.println("Ya se pueden mandar mensajes");
 		while(!exit){
