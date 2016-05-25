@@ -17,7 +17,6 @@ import java.util.Collections;
 public class PsPort {
 	
 	final static int MAXLENGHT = 100;
-	final static int ENCABEZADOMENSAJE = 2;
 	final static String SEPARADORMENSAJE = "=";
 	final static int PUERTO = 0;
 	final static int ID = 1;
@@ -80,7 +79,7 @@ public class PsPort {
 			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast.get(idData));
 			byte mensaje[] = crearMensaje(idData, data);
 			
-			DatagramPacket paquete = new DatagramPacket(mensaje, (len+ENCABEZADOMENSAJE), grupoMulticast , port);
+			DatagramPacket paquete = new DatagramPacket(mensaje, mensaje.length, grupoMulticast , port);
 			conexion.send(paquete);
 			enviado = true;
 
