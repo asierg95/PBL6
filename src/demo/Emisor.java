@@ -13,7 +13,7 @@ public class Emisor {
 		Scanner teclado = new Scanner(System.in);
 		int id, len, respuesta;
 		
-		publicador.iniciarConexion();
+		publicador.iniciarConexion("middleware.conf");
 		
 		System.out.println("Ya se pueden mandar mensajes");
 		while(!exit){
@@ -30,3 +30,4 @@ public class Emisor {
 	}
 
 }
+
