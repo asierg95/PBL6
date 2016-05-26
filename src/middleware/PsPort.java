@@ -34,6 +34,7 @@ public class PsPort {
 
 	MulticastSocket conexion;
 	int port;
+	String keyString;
 	
 	ArrayList<String> ipMulticast;
 	ArrayList<String> datos;
@@ -112,10 +113,7 @@ public class PsPort {
 		byte [] mensajeCifradoDescifrado;
 		Cipher cipher = null;
 		SecretKey clave = null;
-		
-		//LEER DE FICHERO
-		String keyString = "1=O)234F%P0PbL6?¿!AUsz,aje4/42s";
-		
+
 		clave = crearClaveCifrado(keyString);
 		cipher = inicializarCipher(mode, clave);
 		mensajeCifradoDescifrado = cifradorDescifradorBytes(mensajeInicial, cipher);
@@ -243,7 +241,8 @@ public class PsPort {
 				    		port = Integer.valueOf(split[1]);
 				    		break;
 				    	case "clave":
-				    		
+				    		keyString = split[1];
+				    		System.out.println(keyString);
 				    		break;
 				    	case "id":
 				    		id = Integer.valueOf(split[1]);
