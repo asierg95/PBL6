@@ -140,11 +140,10 @@ public class PsPort {
 				} catch (InvalidKeyException e) {
 					e.printStackTrace();
 				}
-			    byte[] mensaje = mensajeInicial;
 			    byte[] mensajeCifrado = null;
 			    //Cifrar mensaje
 			    try {
-					mensajeCifrado = cipher.doFinal(mensaje);
+					mensajeCifrado = cipher.doFinal(mensajeInicial);
 				} catch (IllegalBlockSizeException | BadPaddingException e) {
 					e.printStackTrace();
 				}
@@ -203,22 +202,20 @@ public class PsPort {
 	 * @return el mensaje combinado que se va a publicar
 	 */
 	public byte[] crearMensaje(int idData, byte[] data) {
-		String hash = SEPARADORMENSAJE + "12345FE";
-		byte[] hashByte;
-		byte [] idByte;
-		String id = String.valueOf(idData) + SEPARADORMENSAJE;
-		idByte = id.getBytes();
-		hashByte = hash.getBytes();
+		int hash = 0;
+		String combinedIdDataString;
+		String combinedIdDataHashString;
+		String id = String.valueOf(idData);
 		
-		byte[] combined = new byte[data.length + idByte.length + hashByte.length];
-
-		System.arraycopy(idByte,0,combined,0,idByte.length);
-		System.arraycopy(data,0,combined,idByte.length,data.length);
-		System.arraycopy(hashByte,0,combined, (idByte.length+data.length), hashByte.length);
+		combinedIdDataString = id + SEPARADORMENSAJE + byteArraytoString(data);
+		hash = combinedIdDataString.hashCode();
+		System.out.println("HASH: "+hash);
 		
-		System.out.println("COMBINADOOOOOOOO "+byteArraytoString(combined));
+		combinedIdDataHashString = combinedIdDataString +SEPARADORMENSAJE+ String.valueOf(hash);
 		
-		return combined;
+		System.out.println("COMBINADOOOOOOOO "+combinedIdDataHashString);
+		
+		return combinedIdDataHashString.getBytes();
 	}
 
 	/**
@@ -320,15 +317,22 @@ public class PsPort {
 		int idDato;
 		String [] arrayMensaje;
 		byte[] datoDescifrado;
+		int hash;
 		
 		datoDescifrado = descifrar(datoByte);
 		mensajeCompletoString = byteArraytoString(datoDescifrado);
 		arrayMensaje = separarString(mensajeCompletoString, SEPARADORMENSAJE);
 		idDato = leerIdDato(arrayMensaje);
 		mensaje = leerMensaje(arrayMensaje);
+		hash = leerHashMensaje(arrayMensaje);
+		System.out.println("HASH RECIBIDO: "+hash);
+		String combinadoIdMensaje = idDato +SEPARADORMENSAJE+ mensaje;
+		int hashReal = combinadoIdMensaje.hashCode();
+		System.out.println("HASH REAL: "+hashReal+"  NUMERO:"+combinadoIdMensaje);
+		System.out.println("HASH JEJEJE:"+"1=123456".getBytes().hashCode());
 		datos.set(idDato, mensaje);
 	}
-	
+
 	private byte[] descifrar(byte[] datoByte) {
 		Cipher cipher = null;
 		//CREAR CLAVE DES/ENCRIPTACION
@@ -404,6 +408,15 @@ public class PsPort {
 	 */
 	private String leerMensaje(String [] arrayMensaje) {
 		return arrayMensaje[1];
+	}
+	
+	/**
+	 * Separa el hash del array de strings
+	 * @param arrayMensaje el array que contiene el idDato, el dato y el hash
+	 * @return el dato del array
+	 */
+	private int leerHashMensaje(String[] arrayMensaje) {
+		return Integer.valueOf(arrayMensaje[2]);
 	}
 
 	/**
