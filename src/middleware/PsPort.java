@@ -86,7 +86,8 @@ public class PsPort {
 		try {
 			InetAddress grupoMulticast = InetAddress.getByName(ipMulticast.get(idData));
 			byte mensaje[] = crearMensaje(idData, data);
-			byte[] mensajeEncriptado = encriptarMensaje(mensaje);
+			byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
+
 			DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulticast , port);
 
 			conexion.send(paquete);
@@ -99,85 +100,73 @@ public class PsPort {
 		return enviado;
 	}
 	
-	private byte[] encriptarMensaje(byte[] mensajeInicial) {
-		String StringCifrado = "";
+	private byte[] encriptarDesencriptarMensaje(byte[] mensajeInicial, int mode) {
+		byte [] mensajeCifradoDescifrado;
 		Cipher cipher = null;
-		//CREAR CLAVE DES/ENCRIPTACION
+		SecretKey clave = null;
 		
-				String keystring = "1=O)234F%P0PbL6?¿!AUsz,aje4/42s";
-		        SecretKey clave = null;
-				try {
-					SecretKeyFactory factory = SecretKeyFactory.getInstance("DESede");
-					clave = factory.generateSecret(new DESedeKeySpec(keystring.getBytes()));
-			        cipher = Cipher.getInstance("DESede");
-				} catch (InvalidKeyException e2) {
-					e2.printStackTrace();
-				} catch (InvalidKeySpecException e2) {
-					e2.printStackTrace();
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				} catch (NoSuchPaddingException e) {
-					e.printStackTrace();
-				}
-				
-			    System.out.println("CLAVE:" + new String(clave.getEncoded()));
-				
-
-		//CREAR ENCRIPTADOR
-			try {
-				cipher = Cipher.getInstance("DESede");
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-				e.printStackTrace();
-			}
-			
-			//CIFRAR
-				//inicializar en modo cifrado
-			    try {
-					cipher.init(Cipher.ENCRYPT_MODE, clave);
-				} catch (InvalidKeyException e) {
-					e.printStackTrace();
-				}
-			    byte[] mensaje = mensajeInicial;
-			    byte[] mensajeCifrado = null;
-			    //Cifrar mensaje
-			    try {
-					mensajeCifrado = cipher.doFinal(mensaje);
-				} catch (IllegalBlockSizeException | BadPaddingException e) {
-					e.printStackTrace();
-				}
-			    
-				StringCifrado = new String(mensajeCifrado);
-				
-				System.out.println("--------------- TEXTO CIFRADO ---------------");
-				System.out.println(StringCifrado);   // Mostrar texto cifrado
-				System.out.println("---------------------------------------------");
-				
-				
-				
-				//DESCIFRAR
-				//inicializar en modo descifrado   
-			    try {
-			    	cipher.init(Cipher.DECRYPT_MODE, clave);
-				} catch (InvalidKeyException e) {
-					e.printStackTrace();
-				}
-			
-			    //Descifrar mensaje
-			    byte[] mensajeDescifrado = null;
-				try {
-					mensajeDescifrado = cipher.doFinal(StringCifrado.getBytes());
-				} catch (IllegalBlockSizeException | BadPaddingException e1) {
-					e1.printStackTrace();
-				}
-			    
-				String StringDescifrado = new String(mensajeDescifrado);
-				System.out.println("--------------- TEXTO DESCIFRADO ---------------");
-				System.out.println(StringDescifrado);   // Mostrar texto cifrado
-				System.out.println("---------------------------------------------");
-			
-		return mensajeCifrado;
-	}	
+		//LEER DE FICHERO
+		String keyString = "1=O)234F%P0PbL6?¿!AUsz,aje4/42s";
+		
+		clave = crearClaveCifrado(keyString);
+		cipher = inicializarCipher(mode, clave);
+		mensajeCifradoDescifrado = cifradorDescifradorBytes(mensajeInicial, cipher);
+		
+		System.out.println("CLAVE:" + new String(clave.getEncoded()));
+		String StringCifrado = new String(mensajeCifradoDescifrado);
+		System.out.println("--------------- TEXTO DES/CIFRADO ---------------");
+		System.out.println(StringCifrado);
+		System.out.println("---------------------------------------------");
+		
+		return mensajeCifradoDescifrado;
+	}
 	
+	private byte[] cifradorDescifradorBytes(byte[] mensajeInicial, Cipher cipher) {
+		byte[] mensajeCifrado = null;
+		
+	    //Des/Cifrar mensaje
+	    try {
+			mensajeCifrado = cipher.doFinal(mensajeInicial);
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
+		}
+		return mensajeCifrado;
+	}
+
+	private Cipher inicializarCipher(int encript_mode, SecretKey clave) {
+		//CREAR ENCRIPTADOR
+		Cipher cipher = null;
+		
+		try {
+			cipher = Cipher.getInstance("DESede");
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
+		
+		//inicializar cipher en modo des/cifrado
+	    try {
+			cipher.init(encript_mode, clave);
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		}
+		
+		return cipher;
+	}
+
+	private SecretKey crearClaveCifrado(String keyString) {
+		//CREAR CLAVE DES/ENCRIPTACION
+        SecretKey clave = null;
+        SecretKeyFactory factory;
+		try {
+			factory = SecretKeyFactory.getInstance("DESede");
+			clave = factory.generateSecret(new DESedeKeySpec(keyString.getBytes()));
+		} catch (InvalidKeyException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		return clave;
+	}
+
 	/**
 	 * Recoge ultimo dato publicado
 	 * @param idData id del dato que se quiere
@@ -194,22 +183,20 @@ public class PsPort {
 	 * @return el mensaje combinado que se va a publicar
 	 */
 	public byte[] crearMensaje(int idData, byte[] data) {
-		String hash = SEPARADORMENSAJE + "12345FE";
-		byte[] hashByte;
-		byte [] idByte;
-		String id = String.valueOf(idData) + SEPARADORMENSAJE;
-		idByte = id.getBytes();
-		hashByte = hash.getBytes();
+		int hash = 0;
+		String combinedIdDataString;
+		String combinedIdDataHashString;
+		String id = String.valueOf(idData);
 		
-		byte[] combined = new byte[data.length + idByte.length + hashByte.length];
-
-		System.arraycopy(idByte,0,combined,0,idByte.length);
-		System.arraycopy(data,0,combined,idByte.length,data.length);
-		System.arraycopy(hashByte,0,combined, (idByte.length+data.length), hashByte.length);
+		combinedIdDataString = id + SEPARADORMENSAJE + byteArraytoString(data);
+		hash = combinedIdDataString.hashCode();
+		System.out.println("HASH: "+hash);
 		
-		System.out.println("COMBINADOOOOOOOO "+byteArraytoString(combined));
+		combinedIdDataHashString = combinedIdDataString +SEPARADORMENSAJE+ String.valueOf(hash);
 		
-		return combined;
+		System.out.println("COMBINADOOOOOOOO "+combinedIdDataHashString);
+		
+		return combinedIdDataHashString.getBytes();
 	}
 
 	/**
@@ -309,66 +296,19 @@ public class PsPort {
 		int idDato;
 		String [] arrayMensaje;
 		byte[] datoDescifrado;
+		int hash;
 		
-		datoDescifrado = descifrar(datoByte);
+		datoDescifrado = encriptarDesencriptarMensaje(datoByte, Cipher.DECRYPT_MODE);
 		mensajeCompletoString = byteArraytoString(datoDescifrado);
 		arrayMensaje = separarString(mensajeCompletoString, SEPARADORMENSAJE);
 		idDato = leerIdDato(arrayMensaje);
 		mensaje = leerMensaje(arrayMensaje);
+		hash = leerHashMensaje(arrayMensaje);
+		System.out.println("HASH RECIBIDO: "+hash);
+		String combinadoIdMensaje = idDato +SEPARADORMENSAJE+ mensaje;
+		int hashReal = combinadoIdMensaje.hashCode();
+		System.out.println("HASH REAL: "+hashReal+"  NUMERO:"+combinadoIdMensaje);
 		datos.set(idDato, mensaje);
-	}
-	
-	private byte[] descifrar(byte[] datoByte) {
-		Cipher cipher = null;
-		//CREAR CLAVE DES/ENCRIPTACION
-				String keystring = "1=O)234F%P0PbL6?¿!AUsz,aje4/42s";
-		        SecretKey clave = null;
-				try {
-					SecretKeyFactory factory = SecretKeyFactory.getInstance("DESede");
-					clave = factory.generateSecret(new DESedeKeySpec(keystring.getBytes()));
-			        cipher = Cipher.getInstance("DESede");
-				} catch (InvalidKeyException e2) {
-					e2.printStackTrace();
-				} catch (InvalidKeySpecException e2) {
-					e2.printStackTrace();
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				} catch (NoSuchPaddingException e) {
-					e.printStackTrace();
-				}
-				
-			    System.out.println("CLAVE:" + new String(clave.getEncoded()));
-				
-
-		//CREAR ENCRIPTADOR
-			try {
-				cipher = Cipher.getInstance("DESede");
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-				e.printStackTrace();
-			}
-			
-			//DESCIFRAR
-			//inicializar en modo descifrado   
-		    try {
-		    	cipher.init(Cipher.DECRYPT_MODE, clave);
-			} catch (InvalidKeyException e) {
-				e.printStackTrace();
-			}
-		
-		    System.out.println("DATOOO: "+datoByte);
-		    //Descifrar mensaje
-		    byte[] mensajeDescifrado = null;
-			try {
-				mensajeDescifrado = cipher.doFinal(datoByte);
-			} catch (IllegalBlockSizeException | BadPaddingException e1) {
-				e1.printStackTrace();
-			}
-		    
-			String StringDescifrado = new String(mensajeDescifrado);
-			System.out.println("--------------- TEXTO DESCIFRADO ---------------");
-			System.out.println(StringDescifrado);   // Mostrar texto cifrado
-			System.out.println("---------------------------------------------");
-		return mensajeDescifrado;
 	}
 
 	/**
@@ -393,6 +333,15 @@ public class PsPort {
 	 */
 	private String leerMensaje(String [] arrayMensaje) {
 		return arrayMensaje[1];
+	}
+	
+	/**
+	 * Separa el hash del array de strings
+	 * @param arrayMensaje el array que contiene el idDato, el dato y el hash
+	 * @return el dato del array
+	 */
+	private int leerHashMensaje(String[] arrayMensaje) {
+		return Integer.valueOf(arrayMensaje[2]);
 	}
 
 	/**
