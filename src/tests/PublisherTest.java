@@ -42,19 +42,19 @@ public class PublisherTest {
 	}
 	
 	@Test
-	public void testSendLength(){
+	public void testSendLengthMsg(){
 		int expected = 1;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(0, "kaixoo", 6);
+		int recived = publish.send(1, "asdf", 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
 	
 	@Test
-	public void testSendFail(){
-		int expected = -1;
+	public void testSendLengthNum(){
+		int expected = 1;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "kaixo", 6);
+		int recived = publish.send(0, "kaixoo", 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
