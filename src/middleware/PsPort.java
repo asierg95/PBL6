@@ -18,10 +18,6 @@ public class PsPort {
 	
 	final static int MAXLENGHT = 100;
 	final static String SEPARADORMENSAJE = "=";
-	final static int PUERTO = 0;
-	final static int ID = 1;
-	final static int GRUPO = 2;
-	final static int LONGITUD = 3;
 	final static int INTFALLO = -1;
 
 	MulticastSocket conexion;
@@ -93,16 +89,10 @@ public class PsPort {
 	/**
 	 * Recoge ultimo dato publicado
 	 * @param idData id del dato que se quiere
-	 * @param len longitud del dato que se quiere
 	 * @return
 	 */
-	public String getLastSample(int idData, int len){
-		//System.out.println(datos.get(idData).length());
-		//if(datos.get(idData).length() == len){
-			return datos.get(idData);
-		//}else{
-		//	return "-1";
-		//}
+	public String getLastSample(int idData){
+		return datos.get(idData);
 	}
 	
 	/**
@@ -144,7 +134,6 @@ public class PsPort {
 	 */
 	public void inicializarConfiguracion(String direccionFichero) {
 		int id = INTFALLO;
-		int cont = 0;
 		int longitud = 0;
 		String ip;
 		String line;
@@ -154,24 +143,23 @@ public class PsPort {
 		    while ((line = br.readLine()) != null) {
 		    	try{
 		    		 split = line.split(SEPARADORMENSAJE);
-		    		 switch(cont){
-				    	case PUERTO:
+		    		 switch(split[0]){
+				    	case "puerto":
 				    		port = Integer.valueOf(split[1]);
-				    		cont = ID;
 				    		break;
-				    	case ID:
+				    	case "clave":
+				    		
+				    		break;
+				    	case "id":
 				    		id = Integer.valueOf(split[1]);
-				    		cont = GRUPO;
 				    		break;
-				    	case GRUPO:
+				    	case "grupo":
 				    		ip = split[1];
 				    		ipMulticast.set(id, ip);
-				    		cont = LONGITUD;
 				    		break;
-				    	case LONGITUD:
+				    	case "long":
 				    		longitud = Integer.valueOf(split[1]);
 				    		dataLenght.add(id, longitud);
-				    		cont = ID;
 				    		break;
 				    	default:
 				    		break;
