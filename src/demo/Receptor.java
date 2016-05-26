@@ -19,9 +19,9 @@ public class Receptor {
 		
 		while(true){
 			Thread.sleep(6000);
-			String dato1 = suscriptor.obtenerDato(0, 4);
+			String dato1 = suscriptor.obtenerDato(0, 8);
 			System.out.println("Receptor recibe: "+dato1);
-			String dato2 = suscriptor.obtenerDato(1, 4);
+			String dato2 = suscriptor.obtenerDato(1, 6);
 			System.out.println("Receptor2 recibe: "+dato2);
 		}
 	}

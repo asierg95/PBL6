@@ -43,41 +43,11 @@ public class PsPortTest {
 	}	
 	
 	@Test
-	  public void testGetLastSample() {
-	    String expected = "123456";
-	    port.start();
-	    port.guardarDato(1, "123456");
-	    String actual = port.getLastSample(1, 6);
-	    org.junit.Assert.assertEquals("failure - message saved not same as readed", expected, actual);
-	}	
-	
-	@Test
 	  public void testCrearConexion() {
 	    boolean expected = true;
 	    port.start();
 	    boolean actual = port.crearConexion(6868);
 	    org.junit.Assert.assertEquals("failure - conexion not created", expected, actual);
-	}
-	
-	
-
-	/*
-	@Test
-	public void testGuardarTiempoEspera() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
-	
-		dataReader.start();
-		replayAll();
-		
-		Constructor<ClienteSocket> constructor = ClienteSocket.class.getDeclaredConstructor(new Class[] {Socket.class, InterfazCliente.class});
-		constructor.setAccessible(true);
-		client = constructor.newInstance(new Socket(),ic);
-		client.guardarTiempoEspera("50");
-		verifyAll();
-	}*/
-	
-	
-	
-	
-	
+	}	
 
 }

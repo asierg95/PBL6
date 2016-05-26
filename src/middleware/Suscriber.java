@@ -43,8 +43,12 @@ public class Suscriber {
 	 * @return el ultimo dato publicado
 	 */
 	public String obtenerDato(int idDato, int lenght){
-		String dato = port.getLastSample(idDato, lenght);
-		return dato;
+		String dato = port.getLastSample(idDato);
+		if(dato.length() == lenght){
+			return dato;
+		}else{
+			return "-1";
+		}
 	}
 	
 	/**

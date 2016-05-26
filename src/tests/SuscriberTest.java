@@ -64,4 +64,18 @@ public class SuscriberTest {
 		
 		org.junit.Assert.assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void testObtenerDatoLength() throws InterruptedException{
+		suscriber.iniciarConexion(fichConfigGood);
+		suscriber.suscribirseADato(idDato);
+		suscriber.escuchar();
+		publish.iniciarConexion(fichConfigGood);
+		publish.send(idDato, "kaixoo", 6);
+		String expected = "-1";
+		Thread.sleep(10);
+		String actual = suscriber.obtenerDato(idDato, 4);
+		
+		org.junit.Assert.assertEquals(expected, actual);
+	}
 }
