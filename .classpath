@@ -3,5 +3,15 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/easymock-3.4.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/easymock-3.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/easymock-3.4-samples.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/easymock-3.4-sources.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/easymock-3.4-tests.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/original-easymock-3.4.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/original-easymock-3.4-sources.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/objenesis-2.2/objenesis-2.2.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/objenesis-2.2/objenesis-2.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/Clase/Tercero/Semestre2/IngenieriaDelSoftware/easymock-3.4/objenesis-2.2/objenesis-2.2-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
