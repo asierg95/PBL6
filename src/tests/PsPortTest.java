@@ -1,11 +1,18 @@
 package tests;
 
+import static org.junit.Assert.*;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.crypto.Cipher;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import middleware.DataReader;
 import middleware.PsPort;
 
 public class PsPortTest {
@@ -24,14 +31,14 @@ public class PsPortTest {
 	public void testStart() {
 		 boolean expected = true;
 		 boolean actual = port.start();
-		 org.junit.Assert.assertEquals("Failure - conexion does not start correctly", expected, actual);
+		 assertEquals("Failure - conexion does not start correctly", expected, actual);
 	}
 	
 	@Test
 	  public void testCrearMensaje() {
-	    byte[] expected = "1=testeo".getBytes();
+	    byte[] expected = "1=testeo=1219308008".getBytes();
 	    byte[] actual = port.crearMensaje(1, "testeo".getBytes());
-	    org.junit.Assert.assertArrayEquals("failure - byte arrays not same", expected, actual);
+	    assertArrayEquals("failure - byte arrays not same", expected, actual);
 	  }
 	
 	@Test
@@ -39,7 +46,7 @@ public class PsPortTest {
 	    boolean expected = true;
 	    port.start();
 	    boolean actual = port.publish(1, "123456".getBytes(), 6);
-	    org.junit.Assert.assertEquals("failure - message not published", expected, actual);
+	    assertEquals("failure - message not published", expected, actual);
 	}	
 	
 	@Test
@@ -47,7 +54,40 @@ public class PsPortTest {
 	    boolean expected = true;
 	    port.start();
 	    boolean actual = port.crearConexion(6868);
-	    org.junit.Assert.assertEquals("failure - conexion not created", expected, actual);
+	    assertEquals("failure - conexion not created", expected, actual);
 	}	
+	
+	@Test
+	public void testEncriptarDesencriptar() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
+		String expected = "prueba";
+		port.start();
+		String mensaje = "prueba";
+		//Encriptar
+		Method encriptar = port.getClass().getDeclaredMethod("encriptarDesencriptarMensaje", byte[].class, int.class);
+		encriptar.setAccessible(true);
+		byte[] encriptado = (byte[]) encriptar.invoke(port, mensaje.getBytes(), Cipher.ENCRYPT_MODE);
+		//Desencriptar
+		Method desencriptar = port.getClass().getDeclaredMethod("encriptarDesencriptarMensaje", byte[].class, int.class);
+		desencriptar.setAccessible(true);
+		byte[] desencriptado = (byte[]) desencriptar.invoke(port, encriptado, Cipher.DECRYPT_MODE);
+		
+		String actual = new String(desencriptado, "UTF-8");		
+		
+		assertEquals("failure - encription not correctly encript", expected, actual);
+	}
+	
+	@Test
+	public void testLeerMensaje() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
+		String expected = "mensaje";
+		String [] mensaje = {"id","mensaje","hash"};
+						
+		Method leerMensaje = PsPort.class.getDeclaredMethod("leerMensaje", String[].class);
+		leerMensaje.setAccessible(true);
+		String actual = (String) leerMensaje.invoke(port, mensaje);
+		
+		assertEquals("failure - message not correctly readed", expected, actual);
+	}
+	
+	
 
 }
