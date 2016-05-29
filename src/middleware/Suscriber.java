@@ -19,7 +19,7 @@ public class Suscriber {
 	 * @param direccionFicheroConfiguracion fichero de configuracion
 	 */
 	public boolean iniciarConexion(String direccionFicheroConfiguracion) {
-		boolean respuesta = false;
+		boolean respuesta;
 		conexion = new PsPortFactory();
 		port = conexion.getPort(direccionFicheroConfiguracion);
 		respuesta = port.start();
@@ -31,7 +31,7 @@ public class Suscriber {
 	 * @param idDato el id del dato al que se va a suscribir
 	 */
 	public boolean suscribirseADato(int idDato) {
-		boolean respuesta = false;
+		boolean respuesta;
 		respuesta = port.suscribirADato(idDato);
 		return respuesta;
 	}

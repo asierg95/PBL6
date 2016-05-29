@@ -3,6 +3,7 @@ package middleware;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.util.logging.Logger;
 
 /**
  * Hilo que lee los datos de la conexion socket, los interpreta y los almacena
@@ -15,6 +16,7 @@ public class DataReader extends Thread{
 	boolean exit = false;
 	String separadorMensaje;
 	PsPort port;
+	private static final Logger LOGGER = Logger.getLogger(DataReader.class.getName());
 	
 	/**
 	 * DataReader constructor
@@ -39,13 +41,13 @@ public class DataReader extends Thread{
 	private void ejecutar() {
 		while(!exit){
 			try {
-				byte datoSocket[] = new byte[maxLenght];
+				byte[] datoSocket = new byte[maxLenght];
 				DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 				conexion.receive(paquete);			
 				guardarMensaje(paquete);
 				
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.info(e.getMessage());
 			}
 		}		
 	}
@@ -72,7 +74,7 @@ public class DataReader extends Thread{
 	 * @param longitud la longitud de los datos utiles dentro del array
 	 * @return byteArray con los datos utiles y longitud justa
 	 */
-	private byte[] copiarByteArray(byte [] datoByteCompleto, int longitud) {
+	private static byte[] copiarByteArray(byte [] datoByteCompleto, int longitud) {
 		byte [] datoByte = new byte [longitud];
 		for(int i = 0; i<datoByte.length; i++){
 			datoByte[i] = datoByteCompleto[i];
@@ -85,7 +87,7 @@ public class DataReader extends Thread{
 	 * @param datoByteCompleto el array completo que se va a analizar
 	 * @return longitud de los datos utiles del array
 	 */
-	private int longitudByteArray(byte[] datoByteCompleto) {
+	private static int longitudByteArray(byte[] datoByteCompleto) {
 		int longitud = 0;
 		while(datoByteCompleto[longitud] != '\0'){
 			longitud++;
