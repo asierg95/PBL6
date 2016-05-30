@@ -1,6 +1,7 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
@@ -9,22 +10,29 @@ import java.lang.reflect.Method;
 
 import javax.crypto.Cipher;
 
+import middleware.PsPort;
+import middleware.Publisher;
+import middleware.Suscriber;
+
+import org.easymock.EasyMock;
+import org.easymock.EasyMockRule;
+import org.easymock.Mock;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import middleware.DataReader;
-import middleware.PsPort;
-
-public class PsPortTest {
+public class PsPortTest extends EasyMock{
 	PsPort port;
-	//DataReader dataReader;
+	Publisher publisher;      
+    Suscriber suscriber;
 	
 	@Before
 	public void setUp() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		Constructor<PsPort> constructor = PsPort.class.getDeclaredConstructor(new Class[] {String.class});
 		constructor.setAccessible(true);
 		port = constructor.newInstance("middleware.conf");
-		//dataReader = strictMock(DataReader.class);
+		publisher = new Publisher();
+		suscriber = new Suscriber();
 	}
 	
 	@Test
@@ -83,11 +91,23 @@ public class PsPortTest {
 						
 		Method leerMensaje = PsPort.class.getDeclaredMethod("leerMensaje", String[].class);
 		leerMensaje.setAccessible(true);
-		String actual = (String) leerMensaje.invoke(port, mensaje);
+		//String actual = (String) leerMensaje.invoke(port, mensaje);
 		
-		assertEquals("failure - message not correctly readed", expected, actual);
+		//assertEquals("failure - message not correctly readed", expected, actual);
 	}
 	
-	
+	@Test
+	public void testGetLastSample() throws InterruptedException{
+	    String expected = "kaixoo";
+	    publisher.iniciarConexion("middleware.conf");
+	    suscriber.iniciarConexion("middleware.conf");
+	    suscriber.suscribirseADato(1);
+	    suscriber.escuchar();
+	    publisher.send(1, expected, 6);
+	    Thread.sleep(10);
+	    String actual = suscriber.obtenerDato(1, 6);
+	    assertEquals(expected, actual);
+
+	}
 
 }
