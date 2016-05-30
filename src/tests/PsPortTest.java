@@ -45,7 +45,7 @@ public class PsPortTest {
 	  public void testPublish() {
 	    boolean expected = true;
 	    port.start();
-	    boolean actual = port.publish(1, "123456".getBytes(), 6);
+	    boolean actual = port.publish(1, "123456".getBytes());
 	    assertEquals("failure - message not published", expected, actual);
 	}	
 	
