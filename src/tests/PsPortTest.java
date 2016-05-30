@@ -125,5 +125,29 @@ public class PsPortTest {
 		inicializarVariablesFichero.invoke(port,linea);
 
 	}
+	
+	@Test
+	public void TestbyteArraytoString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String mensaje = "PruebaTest";
+		String expected = "PruebaTest";
+		
+		Method byteArraytoString = port.getClass().getDeclaredMethod("byteArraytoString", byte[].class);
+		byteArraytoString.setAccessible(true);
+		String actual = (String) byteArraytoString.invoke(port,mensaje.getBytes());
+		assertEquals("failure - byte[] message not correctly cast to String", expected, actual);
+	}
+	
+	@Test
+	public void TestSepararString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String mensaje = "mensaje1=mensaje2=mensaje3";
+		String separador = "=";
+		String [] expected = {"mensaje1","mensaje2","mensaje3"};
+		
+		Method separarString = port.getClass().getDeclaredMethod("separarString", String.class, String.class);
+		separarString.setAccessible(true);
+		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
+		assertArrayEquals(expected, actual);
+	}	
+	
 
 }
