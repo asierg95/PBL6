@@ -18,6 +18,24 @@ import middleware.DataReader;
 
 public class DataReaderTest {
 	
+	DataReader drMock;
+	DataReader dr;
+	
+	@Before
+	public void inicializar(){
+		dr = org.easymock.EasyMock.strictMock(DataReader.class);
+	}
+
+	@Test
+	public void testStart() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
+		dr.ejecutar();
+		org.easymock.EasyMock.replay();
+		
+		drMock = new DataReader(null, null, 100, "=");
+		drMock.start();
+		org.easymock.EasyMock.verify();
+	}
+	
 	@Test
 	public void testCopiarByteArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
 		String expected = "prueba";
@@ -33,37 +51,14 @@ public class DataReaderTest {
 	}
 	
 	@Test
-	public void testLongitudByteArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
-		int expected;
-		String mensaje = "prueba";
-		byte [] mensajeByte = mensaje.getBytes();
+	public void testEjecutar(){
 		DataReader datareader = new DataReader(null, null, 100, "=");
+		datareader.setExit(true);
 		
-		Method longitudByteArray = datareader.getClass().getDeclaredMethod("longitudByteArray", byte[].class);
-		longitudByteArray.setAccessible(true);
-		int actual = (int) longitudByteArray.invoke(datareader, mensajeByte);
-		expected = mensajeByte.length;
-		assertEquals("failure - byte [] size not correctly calculated", expected, actual);
+		datareader.ejecutar();
+		
 	}
 	
-	DataReader ca;
-	DataReader ic;
-	
-	@Before
-	public void inicializar(){
-		ic = org.easymock.EasyMock.strictMock(DataReader.class);
-	}
-
-	@Test
-	public void testCuentaAtras() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
-		
-		ic.ejecutar();
-		org.easymock.EasyMock.replay();
-		
-		ca = new DataReader(null, null, 100, "=");
-		ca.run();
-		org.easymock.EasyMock.verify();
-	}
 	
 	
 }
