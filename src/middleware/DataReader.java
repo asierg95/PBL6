@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class DataReader extends Thread{
 	MulticastSocket conexion;
 	int maxLenght;
-	boolean exit = false;
+	private boolean exit = false;
 	String separadorMensaje;
 	PsPort port;
 	private static final Logger LOGGER = Logger.getLogger(DataReader.class.getName());
@@ -38,7 +38,7 @@ public class DataReader extends Thread{
 		ejecutar();
 	}
 
-	private void ejecutar() {
+	public void ejecutar() {
 		while(!exit){
 			try {
 				byte[] datoSocket = new byte[maxLenght];
@@ -93,6 +93,10 @@ public class DataReader extends Thread{
 			longitud++;
 		}
 		return longitud;
+	}
+	
+	public void setExit(boolean exit){
+		this.exit = exit;
 	}
 
 }
