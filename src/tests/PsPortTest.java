@@ -14,23 +14,24 @@ import middleware.PsPort;
 import middleware.Publisher;
 import middleware.Suscriber;
 
-import org.easymock.EasyMock;
-import org.easymock.EasyMockRule;
-import org.easymock.Mock;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
-public class PsPortTest extends EasyMock{
+
+public class PsPortTest {
+
 	PsPort port;
+
 	Publisher publisher;      
     Suscriber suscriber;
+
 	
 	@Before
 	public void setUp() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		Constructor<PsPort> constructor = PsPort.class.getDeclaredConstructor(new Class[] {String.class});
 		constructor.setAccessible(true);
 		port = constructor.newInstance("middleware.conf");
+
 		publisher = new Publisher();
 		suscriber = new Suscriber();
 	}
@@ -85,18 +86,6 @@ public class PsPortTest extends EasyMock{
 	}
 	
 	@Test
-	public void testLeerMensaje() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
-		String expected = "mensaje";
-		String [] mensaje = {"id","mensaje","hash"};
-						
-		Method leerMensaje = PsPort.class.getDeclaredMethod("leerMensaje", String[].class);
-		leerMensaje.setAccessible(true);
-		//String actual = (String) leerMensaje.invoke(port, mensaje);
-		
-		//assertEquals("failure - message not correctly readed", expected, actual);
-	}
-	
-	@Test
 	public void testGetLastSample() throws InterruptedException{
 	    String expected = "kaixoo";
 	    publisher.iniciarConexion("middleware.conf");
@@ -107,6 +96,33 @@ public class PsPortTest extends EasyMock{
 	    Thread.sleep(10);
 	    String actual = suscriber.obtenerDato(1, 6);
 	    assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void TestinicializarVariablesFichero() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String linea = "puerto=123";
+		
+		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
+		inicializarVariablesFichero.setAccessible(true);
+		inicializarVariablesFichero.invoke(port,linea);
+	}
+	
+	@Test
+	public void TestinicializarVariablesFicheroDefault() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String linea = "  ";
+		
+		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
+		inicializarVariablesFichero.setAccessible(true);
+		inicializarVariablesFichero.invoke(port,linea);
+	}
+	
+	@Test
+	public void TestinicializarVariablesFicheroIndex() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String linea = "puerto=";
+		
+		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
+		inicializarVariablesFichero.setAccessible(true);
+		inicializarVariablesFichero.invoke(port,linea);
 
 	}
 
