@@ -1,0 +1,5 @@
+projectKey=netsgear:analytix
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/netsgear:analytix
+ceTaskId=AVT9wa8v9bUmUj2IVGfE
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVT9wa8v9bUmUj2IVGfE
