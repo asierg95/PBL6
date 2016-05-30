@@ -11,11 +11,13 @@ public class PublisherTest {
 	Publisher publish;
 	String fichConfigGood, fichConfigBad;
 	
+	
+	
 	@Before
 	public void setUp(){
 		publish = new Publisher();
 		fichConfigGood = "middleware.conf";
-		fichConfigBad = "midelguer.conf";
+		fichConfigBad = "exceptionTest.conf";
 	}
 	
 	@After
@@ -42,19 +44,46 @@ public class PublisherTest {
 	}
 	
 	@Test
-	public void testSendLengthMsg(){
+	public void testSendSmallLength(){
 		int expected = 1;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "asdf", 6);
+		int recived = publish.send(1, "kaixoo", 4);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
 	
 	@Test
+    public void testSendBigLength(){
+        int expected = 1;
+        publish.iniciarConexion(fichConfigGood);
+        int recived = publish.send(1, "kaixoo", 8);
+        org.junit.Assert.assertEquals(expected, recived);
+        
+    }
+	
+	@Test
+    public void testSendSmallMsg(){
+        int expected = 1;
+        publish.iniciarConexion(fichConfigGood);
+        int recived = publish.send(1, "kaix", 6);
+        org.junit.Assert.assertEquals(expected, recived);
+        
+    }
+    
+    @Test
+    public void testSendBigMsg(){
+        int expected = 1;
+        publish.iniciarConexion(fichConfigGood);
+        int recived = publish.send(1, "kaixoooo", 6);
+        org.junit.Assert.assertEquals(expected, recived);
+        
+    }
+	
+	@Test
 	public void testSendLengthNum(){
-		int expected = 1;
-		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(0, "kaixoo", 6);
+		int expected = -1;
+		publish.iniciarConexion(fichConfigBad);
+		int recived = publish.send(1, "kaixoo", 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
