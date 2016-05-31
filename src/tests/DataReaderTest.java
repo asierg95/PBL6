@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 
+import javax.crypto.Cipher;
+
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
 import org.junit.Test;
@@ -52,24 +54,38 @@ public class DataReaderTest extends EasyMockSupport{
 	
 	@Test
 	public void testguardarMensaje() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
-		String datoTest = "testeo";
-		DatagramPacket paquete = new DatagramPacket(datoTest.getBytes(),datoTest.length());
-		paquete.getData();	
+		
+		String datoTest = "1=123456";	
 		
 		Constructor<PsPort> constructor = PsPort.class.getDeclaredConstructor(new Class[] {String.class});
 		constructor.setAccessible(true);
 		PsPort port = constructor.newInstance("middleware.conf");
 		
-		DataReader dr = new DataReader(null, null, 100, "=", "C:/Users/Asier/Desktop/logs/");
+		DataReader dr = new DataReader(port, null, 100, "=", "C:/Users/Asier/Desktop/logs/");
 		PsPort drMock;
 		
-		drMock = strictMock(PsPort.class);
+		int hash1 = datoTest.hashCode();
+        String hashString1 = String.valueOf(hash1);
+        String combinedIdDataHashString1 = datoTest +"="+ hashString1;
 		
-		drMock.guardarDato(datoTest.getBytes());
+		drMock = strictMock(PsPort.class);
+		byte[] datoByte = port.encriptarDesencriptarMensaje(combinedIdDataHashString1.getBytes(), Cipher.ENCRYPT_MODE);
+		drMock.guardarDato(datoByte);
 		replayAll();
+		
+		int hash = datoTest.hashCode();
+        String hashString = String.valueOf(hash);
+        String combinedIdDataHashString = datoTest +"="+ hashString;
+        
+		byte[] datoByte2 = port.encriptarDesencriptarMensaje(combinedIdDataHashString.getBytes(), Cipher.ENCRYPT_MODE);
+        
+        DatagramPacket paquete = new DatagramPacket(datoByte2,datoByte2.length);
+		paquete.getData();
 		
 		dr.guardarMensaje(paquete, port);
 		verifyAll();
+		
+		
 		
 	}
 	
