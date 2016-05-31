@@ -1,7 +1,6 @@
 package middleware;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -13,7 +12,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -33,8 +34,9 @@ public class PsPort {
     static final int MAXLENGHT = 100;
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
-    private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-
+    private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
+    FileHandler fh;
+    
     MulticastSocket conexion;
     int port, id = INTFALLO;
     String keyString;
@@ -44,7 +46,7 @@ public class PsPort {
     ArrayList<Integer> dataLenght;
     ArrayList<InetAddress> grupoMulticast;
 	
-    File file;
+    String logPath;
 
     boolean exit;
 		
@@ -53,7 +55,7 @@ public class PsPort {
      * @param direccionFichero direccion del fichero de configuracion
      */
     PsPort(String direccionFichero){
-		
+    	initiliceLogger();
         dataLenght = new ArrayList<>(Collections.nCopies(60, 0));
         ipMulticast = new ArrayList<>(Collections.nCopies(60, ""));
         datos = new ArrayList<>(Collections.nCopies(60, ""));
@@ -61,7 +63,22 @@ public class PsPort {
         inicializarConfiguracion(direccionFichero);		
     }
 	
-    /**
+    private void initiliceLogger() {
+    	String logFilePath = logPath+"PsPort.log";
+    	try {  
+            fh = new FileHandler(logFilePath);
+            LOGGER.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();  
+            fh.setFormatter(formatter);
+        } catch (SecurityException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+    	LOGGER.info("funcionaa");
+    }
+
+	/**
      * Crea la conexion
      */
     public boolean start(){
@@ -69,7 +86,7 @@ public class PsPort {
         exit = false;
         conexionIniciada = crearConexion(port);
         return conexionIniciada;
-        }
+    }
 
     /**
      * 	 * Cierra la conexion
@@ -258,7 +275,7 @@ public class PsPort {
 	            keyString = split[1];
 	            break;
 	        case "log":
-	            file = new File(split[1]);
+	        	logPath = split[1];
 	            break;
 	        case "id":
 	            id = Integer.valueOf(split[1]);
@@ -284,7 +301,7 @@ public class PsPort {
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
-        DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE);
+        DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE, logPath);
         dataReader.start();
     }
     

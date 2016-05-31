@@ -3,7 +3,9 @@ package middleware;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Hilo que lee los datos de la conexion socket, los interpreta y los almacena
@@ -16,7 +18,9 @@ public class DataReader extends Thread{
 	private boolean exit = false;
 	String separadorMensaje;
 	PsPort port;
-	private static final Logger LOGGER = Logger.getLogger(DataReader.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
+	FileHandler fh;
+	String logPath;
 	
 	/**
 	 * DataReader constructor
@@ -26,7 +30,9 @@ public class DataReader extends Thread{
 	 * @param separadorMensaje
 	 */
 	
-	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje) {
+	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, String logPath) {
+		this.logPath = logPath;
+		initiliceLogger();
 		this.port = port;
 		this.conexion = conexion;
 		this.maxLenght = maxLenght;
@@ -45,8 +51,7 @@ public class DataReader extends Thread{
 				DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 				conexion.receive(paquete);			
 				guardarMensaje(paquete, port);
-				
-			} catch (IOException e) {
+			} catch (IOException | NullPointerException e) {
 				LOGGER.info(e.getMessage());
 			}
 		}		
@@ -102,6 +107,22 @@ public class DataReader extends Thread{
 	public void setExit(boolean exit){
 		this.exit = exit;
 	}
+	
+	
+	private void initiliceLogger() {
+		String logFilePath = logPath+"dataReader.log";
+    	try {  
+            fh = new FileHandler(logFilePath);
+            LOGGER.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();  
+            fh.setFormatter(formatter);
+        } catch (SecurityException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+    	LOGGER.info("funcionaa");
+    }
 
 }
 
