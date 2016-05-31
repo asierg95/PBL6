@@ -44,7 +44,7 @@ public class DataReader extends Thread{
 				byte[] datoSocket = new byte[maxLenght];
 				DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
 				conexion.receive(paquete);			
-				guardarMensaje(paquete);
+				guardarMensaje(paquete, port);
 				
 			} catch (IOException e) {
 				LOGGER.info(e.getMessage());
@@ -56,7 +56,7 @@ public class DataReader extends Thread{
 	 * Guarda el mensaje en el array del PsPort
 	 * @param paquete el paquete que contiene los datos que se van a almacenar
 	 */
-	private void guardarMensaje(DatagramPacket paquete) {
+	public void guardarMensaje(DatagramPacket paquete, PsPort port) {
 		byte [] datoByte;
 		int longitudDato;
 		byte [] datoByteCompleto;
@@ -88,9 +88,13 @@ public class DataReader extends Thread{
 	 * @return longitud de los datos utiles del array
 	 */
 	private static int longitudByteArray(byte[] datoByteCompleto) {
+		boolean exitWhile = false;
 		int longitud = 0;
-		while(datoByteCompleto[longitud] != '\0'){
+		while(exitWhile==false && datoByteCompleto[longitud] != '\0'){
 			longitud++;
+			if(longitud == datoByteCompleto.length){
+				exitWhile = true;
+			};
 		}
 		return longitud;
 	}

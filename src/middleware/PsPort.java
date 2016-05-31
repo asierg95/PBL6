@@ -115,7 +115,7 @@ public class PsPort {
      * @param mode 1=encriptar 2=desencriptar
      * @return mensaje encriptado o desencriptado
      */
-    private byte[] encriptarDesencriptarMensaje(byte[] mensajeInicial, int mode) {
+    public byte[] encriptarDesencriptarMensaje(byte[] mensajeInicial, int mode) {
         byte [] mensajeCifradoDescifrado;
         Cipher cipher;
         SecretKey clave;
@@ -243,7 +243,7 @@ public class PsPort {
         }
     } 
     
-    private void inicializarVariablesFichero(String line) {
+    public void inicializarVariablesFichero(String line) {
         int longitud = 0;
         String ip;
         String[] split;
@@ -251,31 +251,32 @@ public class PsPort {
         try{
         split = line.split(SEPARADORMENSAJE);
         switch(split[0]){
-        case "puerto":
-            port = Integer.valueOf(split[1]);
-            break;
-        case "clave":
-            keyString = split[1];
-            break;
-        case "log":
-            file = new File(split[1]);
-            break;
-        case "id":
-            id = Integer.valueOf(split[1]);
-            break;
-        case "grupo":
-            ip = split[1];
-            ipMulticast.set(id, ip);
-            break;
-        case "long":
-            longitud = Integer.valueOf(split[1]);
-            dataLenght.add(id, longitud);
-            break;
-        default:
-            break;
-        }
+	        case "puerto":
+	            port = Integer.valueOf(split[1]);
+	            break;
+	        case "clave":
+	            keyString = split[1];
+	            break;
+	        case "log":
+	            file = new File(split[1]);
+	            break;
+	        case "id":
+	            id = Integer.valueOf(split[1]);
+	            break;
+	        case "grupo":
+	            ip = split[1];
+	            ipMulticast.set(id, ip);
+	            break;
+	        case "long":
+	            longitud = Integer.valueOf(split[1]);
+	            dataLenght.add(id, longitud);
+	            break;
+	        default:
+	            break;
+	        }
         }catch(ArrayIndexOutOfBoundsException e){
-            LOGGER.info(e.getMessage());
+        	LOGGER.info(e.getMessage());
+        	throw new ArrayIndexOutOfBoundsException("arrayIndexOutOfBounds");
         }		  
     }
     
@@ -340,7 +341,7 @@ public class PsPort {
      * @param datoByte el byteArray que se va a convertir en String
      * @return el mensaje convertido a String
      */
-    private static String byteArraytoString(byte [] datoByte) {
+    private String byteArraytoString(byte [] datoByte) {
         String mensaje = null;
         
         try {
@@ -356,7 +357,7 @@ public class PsPort {
      * @param arrayMensaje el array que contiene el idDato y el dato
      * @return el dato del array
      */
-    private static String leerMensaje(String [] arrayMensaje) {
+    private String leerMensaje(String [] arrayMensaje) {
         return arrayMensaje[1];
     }
     
@@ -365,7 +366,7 @@ public class PsPort {
      * @param arrayMensaje el array que contiene el idDato, el dato y el hash
      * @return el dato del array
      */
-    private static int leerHashMensaje(String[] arrayMensaje) {
+    private int leerHashMensaje(String[] arrayMensaje) {
         return Integer.valueOf(arrayMensaje[2]);
     }
     
@@ -384,7 +385,7 @@ public class PsPort {
      * @param separadormensaje el caracter que va a dividir las partes del String
      * @return String [] con los Strings separados
      */
-    private static String[] separarString(String dato, String separadormensaje) {
+    private String[] separarString(String dato, String separadormensaje) {
         String [] mensaje;
         
         mensaje = dato.split(separadormensaje);
