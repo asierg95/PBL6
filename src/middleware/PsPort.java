@@ -63,6 +63,9 @@ public class PsPort {
         inicializarConfiguracion(direccionFichero);		
     }
 	
+    /**
+     * Inicializa el logger que creara los logs y los guardara en ficheros
+     */
     private void initiliceLogger() {
     	String logFilePath = logPath+"PsPort.log";
     	try {  

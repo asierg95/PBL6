@@ -49,7 +49,7 @@ public class DataReader extends Thread{
 			try {
 				byte[] datoSocket = new byte[maxLenght];
 				DatagramPacket paquete = new DatagramPacket(datoSocket, datoSocket.length);
-				conexion.receive(paquete);			
+				conexion.receive(paquete);		
 				guardarMensaje(paquete, port);
 			} catch (IOException | NullPointerException e) {
 				LOGGER.info(e.getMessage());
@@ -103,12 +103,17 @@ public class DataReader extends Thread{
 		}
 		return longitud;
 	}
-	
+	/**
+	 * Dejar de leer datos de la conexion
+	 * @param exit (true: dejar de leer | false: leer)
+	 */
 	public void setExit(boolean exit){
 		this.exit = exit;
 	}
 	
-	
+	/**
+     * Inicializa el logger que creara los logs y los guardara en ficheros
+     */
 	private void initiliceLogger() {
 		String logFilePath = logPath+"dataReader.log";
     	try {  
@@ -119,7 +124,7 @@ public class DataReader extends Thread{
         } catch (SecurityException e) {  
             e.printStackTrace();  
         } catch (IOException e) {  
-            e.printStackTrace();  
+            e.printStackTrace(); 
         }  
     	LOGGER.info("funcionaa");
     }
