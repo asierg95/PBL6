@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
@@ -9,16 +11,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.crypto.Cipher;
+import static org.hamcrest.CoreMatchers.is;
+
+import org.easymock.EasyMockSupport;
+import org.junit.Before;
+import org.junit.Test;
 
 import middleware.PsPort;
 import middleware.Publisher;
 import middleware.Suscriber;
 
-import org.junit.Before;
-import org.junit.Test;
 
-
-public class PsPortTest {
+public class PsPortTest extends EasyMockSupport{
 
 	PsPort port;
 
@@ -116,14 +120,33 @@ public class PsPortTest {
 		inicializarVariablesFichero.invoke(port,linea);
 	}
 	
+	/*
 	@Test
-	public void TestinicializarVariablesFicheroIndex() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void TestinicializarVariablesFicheroIndexPrivado() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String linea = "puerto=";
 		
 		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
 		inicializarVariablesFichero.setAccessible(true);
-		inicializarVariablesFichero.invoke(port,linea);
-
+		
+		try{
+			inicializarVariablesFichero.invoke(port,linea);
+            fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
+        } catch (java.lang.ArrayIndexOutOfBoundsException anArrayIndexOutOfBoundsException) {
+          assertThat(anArrayIndexOutOfBoundsException.getMessage(), is("arrayIndexOutOfBounds"));        
+        }  
+	}
+	*/
+	
+	@Test
+	public void TestinicializarVariablesFicheroIndexPublico() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String linea = "puerto=";
+		
+		try{
+			port.inicializarVariablesFichero(linea);
+            fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
+        } catch (java.lang.ArrayIndexOutOfBoundsException anArrayIndexOutOfBoundsException) {
+          assertThat(anArrayIndexOutOfBoundsException.getMessage(), is("arrayIndexOutOfBounds"));        
+        }
 	}
 	
 	@Test
@@ -148,6 +171,20 @@ public class PsPortTest {
 		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
 		assertArrayEquals(expected, actual);
 	}	
+	/*
+	@Test
+	public void TestGuardarDato() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		String mensaje = "guardarDato1";
+		
+		PsPort psport = mock(PsPort.class);
+		when(psport.encriptarDesencriptarMensaje(null, 0))
+		
+		Method separarString = port.getClass().getDeclaredMethod("separarString", String.class, String.class);
+		separarString.setAccessible(true);
+		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
+		assertArrayEquals(expected, actual);
+	}	*/
+	
 	
 
 }
