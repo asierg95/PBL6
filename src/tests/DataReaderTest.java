@@ -6,34 +6,26 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.DatagramPacket;
 
-import javax.swing.JLabel;
-
+import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
-
-import org.junit.Before;
 import org.junit.Test;
 
 import middleware.DataReader;
+import middleware.PsPort;
 
-public class DataReaderTest {
-	
-	DataReader drMock;
-	DataReader dr;
-	
-	@Before
-	public void inicializar(){
-		dr = org.easymock.EasyMock.strictMock(DataReader.class);
-	}
+public class DataReaderTest extends EasyMockSupport{
 
 	@Test
-	public void testStart() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
-		dr.ejecutar();
-		org.easymock.EasyMock.replay();
-		
-		drMock = new DataReader(null, null, 100, "=");
-		drMock.start();
-		org.easymock.EasyMock.verify();
+	public void testStart(){
+		DataReader dataMock = EasyMock.createMockBuilder(DataReader.class).addMockedMethod("ejecutar").createMock();
+		dataMock.ejecutar();
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(dataMock);
+		   
+		dataMock.run();
+		EasyMock.verify(dataMock);
 	}
 	
 	@Test
@@ -56,6 +48,29 @@ public class DataReaderTest {
 		datareader.setExit(true);
 		
 		datareader.ejecutar();
+	}
+	
+	@Test
+	public void testguardarMensaje() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException{
+		String datoTest = "testeo";
+		DatagramPacket paquete = new DatagramPacket(datoTest.getBytes(),datoTest.length());
+		paquete.getData();	
+		
+		Constructor<PsPort> constructor = PsPort.class.getDeclaredConstructor(new Class[] {String.class});
+		constructor.setAccessible(true);
+		PsPort port = constructor.newInstance("middleware.conf");
+		
+		DataReader dr = new DataReader(null, null, 100, "=");
+		PsPort drMock;
+		
+		drMock = strictMock(PsPort.class);
+		
+		drMock.guardarDato(datoTest.getBytes());
+		replayAll();
+		
+		dr.guardarMensaje(paquete, port);
+		verifyAll();
+		
 		
 	}
 	
