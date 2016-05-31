@@ -170,7 +170,8 @@ public class PsPortTest extends EasyMockSupport{
 		separarString.setAccessible(true);
 		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
 		assertArrayEquals(expected, actual);
-	}	
+	}
+	
 	/*
 	@Test
 	public void TestGuardarDato() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
