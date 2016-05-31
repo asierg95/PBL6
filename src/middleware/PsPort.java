@@ -260,7 +260,7 @@ public class PsPort {
         }
     } 
     
-    public void inicializarVariablesFichero(String line) {
+    private void inicializarVariablesFichero(String line) {
         int longitud = 0;
         String ip;
         String[] split;

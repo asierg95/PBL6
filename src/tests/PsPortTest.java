@@ -120,7 +120,7 @@ public class PsPortTest extends EasyMockSupport{
 		inicializarVariablesFichero.invoke(port,linea);
 	}
 	
-	/*
+	
 	@Test
 	public void TestinicializarVariablesFicheroIndexPrivado() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String linea = "puerto=";
@@ -131,24 +131,11 @@ public class PsPortTest extends EasyMockSupport{
 		try{
 			inicializarVariablesFichero.invoke(port,linea);
             fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
-        } catch (java.lang.ArrayIndexOutOfBoundsException anArrayIndexOutOfBoundsException) {
-          assertThat(anArrayIndexOutOfBoundsException.getMessage(), is("arrayIndexOutOfBounds"));        
+        } catch (InvocationTargetException anInvocationTargetException) {
+          assertThat(anInvocationTargetException.getCause().getMessage(), is("arrayIndexOutOfBounds"));        
         }  
 	}
-	*/
-	
-	@Test
-	public void TestinicializarVariablesFicheroIndexPublico() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		String linea = "puerto=";
-		
-		try{
-			port.inicializarVariablesFichero(linea);
-            fail("Expected an ArrayIndexOutOfBoundsException to be thrown");
-        } catch (java.lang.ArrayIndexOutOfBoundsException anArrayIndexOutOfBoundsException) {
-          assertThat(anArrayIndexOutOfBoundsException.getMessage(), is("arrayIndexOutOfBounds"));        
-        }
-	}
-	
+
 	@Test
 	public void TestbyteArraytoString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String mensaje = "PruebaTest";
