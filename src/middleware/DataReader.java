@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  * Hilo que lee los datos de la conexion socket, los interpreta y los almacena
@@ -18,7 +17,7 @@ public class DataReader extends Thread{
 	private boolean exit = false;
 	String separadorMensaje;
 	PsPort port;
-    private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
+    private Logger LOGGER = Logger.getLogger(PsPort.class.getName());
 	FileHandler fh;
 	String logPath;
 	
@@ -30,9 +29,9 @@ public class DataReader extends Thread{
 	 * @param separadorMensaje
 	 */
 	
-	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, String logPath) {
-		this.logPath = logPath;
-		initiliceLogger();
+	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, Logger LOGGER) {
+		this.LOGGER = LOGGER;
+		//initiliceLogger();
 		this.port = port;
 		this.conexion = conexion;
 		this.maxLenght = maxLenght;
@@ -110,23 +109,5 @@ public class DataReader extends Thread{
 	public void setExit(boolean exit){
 		this.exit = exit;
 	}
-	
-	/**
-     * Inicializa el logger que creara los logs y los guardara en ficheros
-     */
-	private void initiliceLogger() {
-		String logFilePath = logPath+"dataReader.log";
-    	try {  
-            fh = new FileHandler(logFilePath);
-            LOGGER.addHandler(fh);
-            SimpleFormatter formatter = new SimpleFormatter();  
-            fh.setFormatter(formatter);
-        } catch (SecurityException e) {  
-            e.printStackTrace();  
-        } catch (IOException e) {  
-            e.printStackTrace(); 
-        }  
-    }
-
 }
 

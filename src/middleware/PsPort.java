@@ -56,21 +56,20 @@ public class PsPort {
      * @param direccionFichero direccion del fichero de configuracion
      */
     PsPort(String direccionFichero){
-    	initiliceLogger();
         dataLenght = new ArrayList<>(Collections.nCopies(MAXDATOS, 0));
         ipMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
         datos = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
         grupoMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, null));
         inicializarConfiguracion(direccionFichero);		
+    	initiliceLogger();
     }
     
     /**
      * Inicializa el logger que creara los logs y los guardara en ficheros
      */
     private void initiliceLogger() {
-    	String logFilePath = logPath+"PsPort.log";
     	try {  
-            fh = new FileHandler(logFilePath);
+            fh = new FileHandler(logPath);
             LOGGER.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();  
             fh.setFormatter(formatter);
@@ -78,7 +77,7 @@ public class PsPort {
             e.printStackTrace();  
         } catch (IOException e) {  
             e.printStackTrace();  
-        }  
+        } 
     }
 
 	/**
@@ -313,7 +312,7 @@ public class PsPort {
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
-        DataReader dataReader = new DataReader(this, conexion, maxlength, SEPARADORMENSAJE, logPath);
+        DataReader dataReader = new DataReader(this, conexion, maxlength, SEPARADORMENSAJE, LOGGER);
         dataReader.start();
     }
     
