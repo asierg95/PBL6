@@ -35,7 +35,7 @@ public class PsPort {
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
     static final int MAXLENGHTHASH = 50;
-    private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
     FileHandler fh;
     
     MulticastSocket conexion;
@@ -110,7 +110,7 @@ public class PsPort {
         boolean enviado = false;
         byte[] mensaje;
         
-        if((data.length < (maxlength - MAXLENGHTHASH))){
+        if(data.length < (maxlength - MAXLENGHTHASH)){
             try {
                 InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
                 mensaje = crearMensaje(idData, data);
@@ -228,9 +228,9 @@ public class PsPort {
         String hashString;
         String combinedIdDataString;
         String combinedIdDataHashString;
-        String id = String.valueOf(idData);
+        String identifyer = String.valueOf(idData);
         
-        combinedIdDataString = id + SEPARADORMENSAJE + byteArraytoString(data);
+        combinedIdDataString = identifyer + SEPARADORMENSAJE + byteArraytoString(data);
         hash = combinedIdDataString.hashCode();
         hashString = String.valueOf(hash);
         combinedIdDataHashString = combinedIdDataString +SEPARADORMENSAJE+ hashString;
@@ -386,7 +386,7 @@ public class PsPort {
      * @param arrayMensaje el array que contiene el idDato y el dato
      * @return el dato del array
      */
-    private String leerMensaje(String [] arrayMensaje) {
+    private static String leerMensaje(String [] arrayMensaje) {
         return arrayMensaje[1];
     }
     
@@ -395,7 +395,7 @@ public class PsPort {
      * @param arrayMensaje el array que contiene el idDato, el dato y el hash
      * @return el dato del array
      */
-    private int leerHashMensaje(String[] arrayMensaje) {
+    private static int leerHashMensaje(String[] arrayMensaje) {
         return Integer.valueOf(arrayMensaje[2]);
     }
     
@@ -414,7 +414,7 @@ public class PsPort {
      * @param separadormensaje el caracter que va a dividir las partes del String
      * @return String [] con los Strings separados
      */
-    private String[] separarString(String dato, String separadormensaje) {
+    private static String[] separarString(String dato, String separadormensaje) {
         String [] mensaje;
         
         mensaje = dato.split(separadormensaje);

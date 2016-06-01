@@ -16,7 +16,7 @@ public class PublisherTest {
 	@Before
 	public void setUp(){
 		publish = new Publisher();
-		fichConfigGood = "middleware.conf";
+		fichConfigGood = "exceptionTest2.conf";
 		fichConfigBad = "exceptionTest.conf";
 	}
 	

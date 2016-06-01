@@ -28,13 +28,15 @@ public class PsPortTest extends EasyMockSupport{
 
 	Publisher publisher;      
     Suscriber suscriber;
+    
+    String confFile = "exceptionTest2.conf";
 
 	
 	@Before
 	public void setUp() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		Constructor<PsPort> constructor = PsPort.class.getDeclaredConstructor(new Class[] {String.class});
 		constructor.setAccessible(true);
-		port = constructor.newInstance("middleware.conf");
+		port = constructor.newInstance("exceptionTest2.conf");
 
 		publisher = new Publisher();
 		suscriber = new Suscriber();
@@ -92,8 +94,8 @@ public class PsPortTest extends EasyMockSupport{
 	@Test
 	public void testGetLastSample() throws InterruptedException{
 	    String expected = "kaixoo";
-	    publisher.iniciarConexion("middleware.conf");
-	    suscriber.iniciarConexion("middleware.conf");
+	    publisher.iniciarConexion("exceptionTest2.conf");
+	    suscriber.iniciarConexion("exceptionTest2.conf");
 	    suscriber.suscribirseADato(1);
 	    suscriber.escuchar();
 	    publisher.send(1, expected, 6);
@@ -158,21 +160,4 @@ public class PsPortTest extends EasyMockSupport{
 		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
 		assertArrayEquals(expected, actual);
 	}
-	
-	/*
-	@Test
-	public void TestGuardarDato() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		String mensaje = "guardarDato1";
-		
-		PsPort psport = mock(PsPort.class);
-		when(psport.encriptarDesencriptarMensaje(null, 0))
-		
-		Method separarString = port.getClass().getDeclaredMethod("separarString", String.class, String.class);
-		separarString.setAccessible(true);
-		String [] actual = (String[]) separarString.invoke(port,mensaje,separador);
-		assertArrayEquals(expected, actual);
-	}	*/
-	
-	
-
 }

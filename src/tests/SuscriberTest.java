@@ -18,8 +18,8 @@ public class SuscriberTest {
 	public void setUp(){
 		suscriber = new Suscriber();
 		publish = new Publisher();
-		fichConfigGood = "middleware.conf";
-		fichConfigBad = "midelguer.conf";
+		fichConfigGood = "exceptionTest2.conf";
+		fichConfigBad = "exceptionTest.conf";
 		idDato = 1;
 	}
 	
