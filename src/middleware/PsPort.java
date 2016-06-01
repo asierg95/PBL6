@@ -31,6 +31,7 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public class PsPort {
 	
+	static final int MAXDATOS = 300;
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
     static final int MAXLENGHTHASH = 50;
@@ -56,10 +57,10 @@ public class PsPort {
      */
     PsPort(String direccionFichero){
     	initiliceLogger();
-        dataLenght = new ArrayList<>(Collections.nCopies(60, 0));
-        ipMulticast = new ArrayList<>(Collections.nCopies(60, ""));
-        datos = new ArrayList<>(Collections.nCopies(60, ""));
-        grupoMulticast = new ArrayList<>(Collections.nCopies(60, null));
+        dataLenght = new ArrayList<>(Collections.nCopies(MAXDATOS, 0));
+        ipMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
+        datos = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
+        grupoMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, null));
         inicializarConfiguracion(direccionFichero);		
     }
     
@@ -109,7 +110,7 @@ public class PsPort {
         boolean enviado = false;
         byte[] mensaje;
         
-        if(data.length < (maxlength - MAXLENGHTHASH)){
+        if((data.length < (maxlength - MAXLENGHTHASH))){
             try {
                 InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
                 mensaje = crearMensaje(idData, data);
@@ -209,7 +210,11 @@ public class PsPort {
      * @return
      */
     public String getLastSample(int idData){
-        return datos.get(idData);
+    	String dato = "-1";
+    	if(idData < MAXDATOS){
+    		dato = datos.get(idData);
+    	}
+    	return dato;
     }
     
     /**
