@@ -62,7 +62,7 @@ public class PsPort {
         grupoMulticast = new ArrayList<>(Collections.nCopies(60, null));
         inicializarConfiguracion(direccionFichero);		
     }
-	
+    
     /**
      * Inicializa el logger que creara los logs y los guardara en ficheros
      */
@@ -78,7 +78,6 @@ public class PsPort {
         } catch (IOException e) {  
             e.printStackTrace();  
         }  
-    	LOGGER.info("funcionaa");
     }
 
 	/**

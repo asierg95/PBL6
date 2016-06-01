@@ -126,7 +126,6 @@ public class DataReader extends Thread{
         } catch (IOException e) {  
             e.printStackTrace(); 
         }  
-    	LOGGER.info("funcionaa");
     }
 
 }
