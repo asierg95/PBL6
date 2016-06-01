@@ -370,7 +370,7 @@ public class PsPort {
      * @param datoByte el byteArray que se va a convertir en String
      * @return el mensaje convertido a String
      */
-    private String byteArraytoString(byte [] datoByte) {
+    private static String byteArraytoString(byte [] datoByte) {
         String mensaje = null;
         
         try {
