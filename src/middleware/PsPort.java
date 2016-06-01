@@ -33,6 +33,7 @@ public class PsPort {
 	
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
+    static final int MAXLENGHTHASH = 50;
     private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
     FileHandler fh;
     
@@ -108,7 +109,7 @@ public class PsPort {
         boolean enviado = false;
         byte[] mensaje;
         
-        if(data.length < maxlength){
+        if(data.length < (maxlength - MAXLENGHTHASH)){
             try {
                 InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
                 mensaje = crearMensaje(idData, data);
@@ -278,7 +279,7 @@ public class PsPort {
 	            keyString = split[1];
 	            break;
 	        case "maxlength":
-	            maxlength = Integer.valueOf(split[1]) + 16;
+	            maxlength = Integer.valueOf(split[1]) + MAXLENGHTHASH;
 	            break;
 	        case "log":
 	        	logPath = split[1];
