@@ -31,14 +31,13 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public class PsPort {
 	
-    static final int MAXLENGHT = 500;
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
     private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
     FileHandler fh;
     
     MulticastSocket conexion;
-    int port, id = INTFALLO;
+    int port, id = INTFALLO, maxlength;
     String keyString;
 	
     ArrayList<String> ipMulticast;
@@ -109,18 +108,20 @@ public class PsPort {
         boolean enviado = false;
         byte[] mensaje;
         
-        try {
-            InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
-            mensaje = crearMensaje(idData, data);
-            byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
-            
-            DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulti , port);
-            
-            conexion.send(paquete);
-            enviado = true;
-            
-        } catch (IllegalArgumentException | IOException e) {
-            LOGGER.info(e.getMessage());
+        if(data.length < maxlength){
+            try {
+                InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
+                mensaje = crearMensaje(idData, data);
+                byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
+                
+                DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulti , port);
+                
+                conexion.send(paquete);
+                enviado = true;
+                
+            } catch (IllegalArgumentException | IOException e) {
+                LOGGER.info(e.getMessage());
+            }
         }
         
         return enviado;
@@ -276,6 +277,9 @@ public class PsPort {
 	        case "clave":
 	            keyString = split[1];
 	            break;
+	        case "maxlength":
+	            maxlength = Integer.valueOf(split[1]) + 16;
+	            break;
 	        case "log":
 	        	logPath = split[1];
 	            break;
@@ -303,7 +307,7 @@ public class PsPort {
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
-        DataReader dataReader = new DataReader(this, conexion, MAXLENGHT, SEPARADORMENSAJE, logPath);
+        DataReader dataReader = new DataReader(this, conexion, maxlength, SEPARADORMENSAJE, logPath);
         dataReader.start();
     }
     
