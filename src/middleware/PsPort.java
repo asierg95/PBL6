@@ -31,7 +31,7 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public class PsPort {
 	
-    static final int MAXLENGHT = 100;
+    static final int MAXLENGHT = 500;
     static final String SEPARADORMENSAJE = "=";
     static final int INTFALLO = -1;
     private final static Logger LOGGER = Logger.getLogger(PsPort.class.getName());
