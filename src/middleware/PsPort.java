@@ -114,13 +114,15 @@ public class PsPort {
             mensaje = crearMensaje(idData, data);
             byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
             
+            System.out.println(mensajeEncriptado.hashCode());
+            
             DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulti , port);
             
             conexion.send(paquete);
             enviado = true;
             
-        } catch (IllegalArgumentException | IOException e) {
-            LOGGER.info(e.getMessage());
+        } catch (NullPointerException | IllegalArgumentException | IOException e) {
+            LOGGER.info("El mensaje no se ha podido publicar");
         }
         
         return enviado;
@@ -140,8 +142,13 @@ public class PsPort {
         SecretKey clave;
               
         clave = crearClaveCifrado(keyString);
+        System.out.println("Clave: " + clave);
         cipher = inicializarCipher(mode, clave);
+        System.out.println("Cipher: " + cipher);
         mensajeCifradoDescifrado = cifradorDescifradorBytes(mensajeInicial, cipher);
+        
+        System.out.println("Mensaje inicial: " + mensajeInicial);
+        System.out.println("Mensaje cifrado: " + mensajeCifradoDescifrado);
         
         return mensajeCifradoDescifrado;
     }
@@ -157,8 +164,8 @@ public class PsPort {
         
         try {
             mensajeCifradoDescifrado = cipher.doFinal(mensaje);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            LOGGER.info(e.getMessage());
+        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException e) {
+            LOGGER.info("Error al cifrar el mensaje, compruebe la clave utilizada");
         }
         return mensajeCifradoDescifrado;
     }
@@ -176,7 +183,7 @@ public class PsPort {
             cipher = Cipher.getInstance("DESede");
             cipher.init(encriptMode, clave);
             } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
-                LOGGER.info(e.getMessage());
+                LOGGER.info("Error al inicializar el cifrador, comprueve la clave");
             }
         
         return cipher;
@@ -195,7 +202,7 @@ public class PsPort {
             factory = SecretKeyFactory.getInstance("DESede");
             clave = factory.generateSecret(new DESedeKeySpec(keyString.getBytes()));
             } catch (InvalidKeyException | InvalidKeySpecException | NoSuchAlgorithmException e) {
-                LOGGER.info(e.getMessage());
+                LOGGER.info("Error al crear la clave del cifrador, comprueve la clave");
             }
         
         return clave;
@@ -241,7 +248,7 @@ public class PsPort {
             conexion = new MulticastSocket(puertoConexion);
             conexionCreada = true;
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("No se ha podido crear la conexion, compruebe el puerto en el fichero de configuracion");
         }
         return conexionCreada;
     }
@@ -258,7 +265,7 @@ public class PsPort {
                 inicializarVariablesFichero(line);
             }
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("Error al inicializar la configuracion, compruebe que el fichero");
         }
     } 
     
@@ -288,14 +295,13 @@ public class PsPort {
 	            break;
 	        case "long":
 	            longitud = Integer.valueOf(split[1]);
-	            dataLenght.add(id, longitud);
+	            dataLenght.set(id, longitud);
 	            break;
 	        default:
 	            break;
 	        }
         }catch(ArrayIndexOutOfBoundsException e){
-        	LOGGER.info(e.getMessage());
-        	throw new ArrayIndexOutOfBoundsException("arrayIndexOutOfBounds");
+        	LOGGER.info("ATENCION: Uno o mas datos del fichero de configuracion estan mal introducidos");
         }		  
     }
     
@@ -321,7 +327,7 @@ public class PsPort {
 		    conexion.joinGroup(grupoMulticast.get(idDato));
 		    adecuadamenteSuscrito = true;
         } catch (IOException e) {
-		    LOGGER.info(e.getMessage());
+		    LOGGER.info("No se ha podido suscribir al dato " +idDato+ " correctamente");
         }
         return adecuadamenteSuscrito;
     }
@@ -342,6 +348,7 @@ public class PsPort {
         String combinadoIdMensaje;
         
         datoDescifrado = encriptarDesencriptarMensaje(datoByte, Cipher.DECRYPT_MODE);
+        System.out.println(byteArraytoString(datoDescifrado));
         mensajeCompletoString = byteArraytoString(datoDescifrado);
         arrayMensaje = separarString(mensajeCompletoString, SEPARADORMENSAJE);
         idDato = leerIdDato(arrayMensaje);
@@ -349,7 +356,8 @@ public class PsPort {
         hashRecibido = leerHashMensaje(arrayMensaje);
         combinadoIdMensaje = idDato +SEPARADORMENSAJE+ mensaje;
         hashCalculado = combinadoIdMensaje.hashCode();
-        
+        System.out.println("calculado = " + hashCalculado);
+        System.out.println("recibido = " + hashRecibido);
         if(hashRecibido == hashCalculado){
             datos.set(idDato, mensaje);
         }
@@ -366,7 +374,7 @@ public class PsPort {
         try {
             mensaje = new String (datoByte, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("Error al crear el mensaje");
         }
         return mensaje;
     }

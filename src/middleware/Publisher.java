@@ -30,18 +30,14 @@ public class Publisher {
 	 * @param id El canal por el que se van a mandar los mensajes
 	 * @param mensaje El texto que se va a enviar
 	 * @param len Tamaño del texto enviado
-	 * @return 0 = mensaje enviado correctamente, 1 = longitud distinta a la del fichero de configuración, -1 = error desconocido
+	 * @return true -> el mensaje se envia correctamente, false -> el mensaje no se ha enviado
 	 */
-	public int send(int id, String mensaje, int len) {
-		int resultado;
+	public boolean send(int id, String mensaje, int len) {
+		boolean resultado = false;
 		if(len == pPort.dataLenght.get(id) && pPort.dataLenght.get(id) == mensaje.length()){
 			if(pPort.publish(id, mensaje.getBytes())){
-				resultado = 0;
-			}else{
-				resultado = -1;
+				resultado = true;
 			}
-		}else{
-			resultado = 1;
 		}
 		return resultado;
 	}	

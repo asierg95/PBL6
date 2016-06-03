@@ -9,9 +9,9 @@ public class Emisor {
 	public static void main(String[] args) {
 		String mensaje;
 		Publisher publicador = new Publisher();
-		boolean exit = false;
+		boolean exit = false, respuesta;
 		Scanner teclado = new Scanner(System.in);
-		int id, len, respuesta;
+		int id, len;
 		String fichConf = "middleware.conf";
 		publicador.iniciarConexion(fichConf);
 

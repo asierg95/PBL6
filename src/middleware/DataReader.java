@@ -93,13 +93,10 @@ public class DataReader extends Thread{
 	 * @return longitud de los datos utiles del array
 	 */
 	private static int longitudByteArray(byte[] datoByteCompleto) {
-		boolean exitWhile = false;
 		int longitud = 0;
-		while(exitWhile==false && datoByteCompleto[longitud] != '\0'){
+		int longMax = datoByteCompleto.length;
+		while(longitud != longMax && datoByteCompleto[longitud] != '\0'){
 			longitud++;
-			if(longitud == datoByteCompleto.length){
-				exitWhile = true;
-			};
 		}
 		return longitud;
 	}
