@@ -11,7 +11,6 @@ package middleware;
  */
 
 public class Suscriber {
-    private PsPortFactory conexion;
     private PsPort port;
 
 	/**
@@ -19,10 +18,13 @@ public class Suscriber {
 	 * @param direccionFicheroConfiguracion fichero de configuracion
 	 */
 	public boolean iniciarConexion(String direccionFicheroConfiguracion) {
+	    PsPortFactory conexion;
 		boolean respuesta;
+		
 		conexion = new PsPortFactory();
 		port = conexion.getPort(direccionFicheroConfiguracion);
 		respuesta = port.start();
+		
 		return respuesta;
 	}
 

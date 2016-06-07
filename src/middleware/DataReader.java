@@ -11,12 +11,12 @@ import java.util.logging.Logger;
  *
  */
 public class DataReader extends Thread{
-	MulticastSocket conexion;
-	int maxLenght;
+    private MulticastSocket conexion;
+    private int maxLenght;
 	private boolean exit = false;
-	PsPort port;
+	private PsPort port;
     private Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-    String logPath;
+    private String logPath;
 	
 	/**
 	 * DataReader constructor
@@ -26,7 +26,7 @@ public class DataReader extends Thread{
 	 * @param separadorMensaje
 	 */
 	
-	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, Logger LOGGER) {
+	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, Logger LOGGER) {
 		this.LOGGER = LOGGER;
 		this.port = port;
 		this.conexion = conexion;

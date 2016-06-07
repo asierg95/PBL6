@@ -31,23 +31,22 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public class PsPort {
 	
-	static final int MAXDATOS = 300;
-    static final String SEPARADORMENSAJE = "=";
+    private static final int MAXDATOS = 300;
+    private static final String SEPARADORMENSAJE = "=";
     private static final int INTFALLO = -1;
-    static final int MAXLENGHTHASH = 50;
+    private static final int MAXLENGHTHASH = 50;
     private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-    private FileHandler fh;
     
     private MulticastSocket conexion;
-    private int port, id = INTFALLO, maxlength;
-    String keyString;
+    private int port, maxlength;
+    private String keyString;
 	
     private ArrayList<String> ipMulticast;
     ArrayList<String> datos;
     ArrayList<Integer> dataLenght;
     private ArrayList<InetAddress> grupoMulticast;
 	
-    String logPath;
+    private String logPath;
 
     private boolean exit;
 		
@@ -68,6 +67,7 @@ public class PsPort {
      * Inicializa el logger que creara los logs y los guardara en ficheros
      */
     private void initiliceLogger() {
+        FileHandler fh;
     	try {  
             fh = new FileHandler(logPath);
             LOGGER.addHandler(fh);
@@ -278,7 +278,7 @@ public class PsPort {
     } 
     
     private void inicializarVariablesFichero(String line) {
-        int longitud = 0;
+        int longitud = 0,  id = INTFALLO;
         String ip;
         String[] split;
         
@@ -320,7 +320,7 @@ public class PsPort {
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
-        DataReader dataReader = new DataReader(this, conexion, maxlength, SEPARADORMENSAJE, LOGGER);
+        DataReader dataReader = new DataReader(this, conexion, maxlength, LOGGER);
         dataReader.start();
     }
     

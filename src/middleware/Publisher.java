@@ -8,7 +8,7 @@ package middleware;
  */
 public class Publisher {
 	
-	PsPort pPort;
+    private PsPort pPort;
 
 	/**
 	 * Crea una clase con los valores del fichero de configuración e inicia la conexion.
