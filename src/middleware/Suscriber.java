@@ -11,8 +11,8 @@ package middleware;
  */
 
 public class Suscriber {
-	PsPortFactory conexion;
-	PsPort port;
+    private PsPortFactory conexion;
+    private PsPort port;
 
 	/**
 	 * Inicia la conexion socket con la configuracion recogida del fichero

@@ -7,7 +7,7 @@ import middleware.Suscriber;
 public class Receptor {
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String ficheroConfiguracion = "middleware2.conf";
+		String ficheroConfiguracion = "middleware.conf";
 		Suscriber suscriptor = new Suscriber();
 		
 		suscriptor.iniciarConexion(ficheroConfiguracion);

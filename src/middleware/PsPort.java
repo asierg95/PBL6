@@ -33,23 +33,23 @@ public class PsPort {
 	
 	static final int MAXDATOS = 300;
     static final String SEPARADORMENSAJE = "=";
-    static final int INTFALLO = -1;
+    private static final int INTFALLO = -1;
     static final int MAXLENGHTHASH = 50;
     private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-    FileHandler fh;
+    private FileHandler fh;
     
-    MulticastSocket conexion;
-    int port, id = INTFALLO, maxlength;
+    private MulticastSocket conexion;
+    private int port, id = INTFALLO, maxlength;
     String keyString;
 	
-    ArrayList<String> ipMulticast;
+    private ArrayList<String> ipMulticast;
     ArrayList<String> datos;
     ArrayList<Integer> dataLenght;
-    ArrayList<InetAddress> grupoMulticast;
+    private ArrayList<InetAddress> grupoMulticast;
 	
     String logPath;
 
-    boolean exit;
+    private boolean exit;
 		
     /**
      * Constructor PsPort

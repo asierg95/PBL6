@@ -3,7 +3,6 @@ package middleware;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 /**
@@ -15,11 +14,9 @@ public class DataReader extends Thread{
 	MulticastSocket conexion;
 	int maxLenght;
 	private boolean exit = false;
-	String separadorMensaje;
 	PsPort port;
     private Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-	FileHandler fh;
-	String logPath;
+    String logPath;
 	
 	/**
 	 * DataReader constructor
@@ -31,11 +28,9 @@ public class DataReader extends Thread{
 	
 	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, Logger LOGGER) {
 		this.LOGGER = LOGGER;
-		//initiliceLogger();
 		this.port = port;
 		this.conexion = conexion;
 		this.maxLenght = maxLenght;
-		this.separadorMensaje = separadorMensaje;
 	}
 	
 	@Override

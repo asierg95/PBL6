@@ -105,7 +105,7 @@ public class PsPortTest extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestinicializarVariablesFichero() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void testinicializarVariablesFichero() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String linea = "puerto=123";
 		
 		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
@@ -114,7 +114,7 @@ public class PsPortTest extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestinicializarVariablesFicheroDefault() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void testinicializarVariablesFicheroDefault() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String linea = "  ";
 		
 		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
@@ -124,7 +124,7 @@ public class PsPortTest extends EasyMockSupport{
 	
 	
 	@Test
-	public void TestinicializarVariablesFicheroIndexPrivado() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void testinicializarVariablesFicheroIndexPrivado() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String linea = "puerto=";
 		
 		Method inicializarVariablesFichero = port.getClass().getDeclaredMethod("inicializarVariablesFichero", String.class);
@@ -139,7 +139,7 @@ public class PsPortTest extends EasyMockSupport{
 	}
 
 	@Test
-	public void TestbyteArraytoString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void testbyteArraytoString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String mensaje = "PruebaTest";
 		String expected = "PruebaTest";
 		
@@ -150,7 +150,7 @@ public class PsPortTest extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestSepararString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public void testSepararString() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		String mensaje = "mensaje1=mensaje2=mensaje3";
 		String separador = "=";
 		String [] expected = {"mensaje1","mensaje2","mensaje3"};
