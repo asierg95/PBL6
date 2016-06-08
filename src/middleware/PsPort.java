@@ -43,7 +43,7 @@ public class PsPort {
     String keyString;
 	
     ArrayList<String> ipMulticast;
-    ArrayList<String> datos;
+    ArrayList<byte[]> datos;
     ArrayList<Integer> dataLenght;
     ArrayList<InetAddress> grupoMulticast;
 	
@@ -58,7 +58,7 @@ public class PsPort {
     PsPort(String direccionFichero){
         dataLenght = new ArrayList<>(Collections.nCopies(MAXDATOS, 0));
         ipMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
-        datos = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
+        datos = new ArrayList<>(Collections.nCopies(MAXDATOS, "-1".getBytes()));
         grupoMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, null));
         inicializarConfiguracion(direccionFichero);		
     	initiliceLogger();
@@ -208,8 +208,8 @@ public class PsPort {
      * @param idData id del dato que se quiere
      * @return
      */
-    public String getLastSample(int idData){
-    	String dato = "-1";
+    public byte[] getLastSample(int idData){
+    	byte[] dato = "-1".getBytes();
     	if(idData < MAXDATOS){
     		dato = datos.get(idData);
     	}
@@ -360,7 +360,7 @@ public class PsPort {
         hashCalculado = combinadoIdMensaje.hashCode();
         
         if(hashRecibido == hashCalculado){
-            datos.set(idDato, mensaje);
+            datos.set(idDato, mensaje.getBytes());
         }
     }
     

@@ -31,7 +31,6 @@ public class DataReader extends Thread{
 	
 	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, Logger LOGGER) {
 		this.LOGGER = LOGGER;
-		//initiliceLogger();
 		this.port = port;
 		this.conexion = conexion;
 		this.maxLenght = maxLenght;

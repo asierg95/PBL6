@@ -38,7 +38,7 @@ public class PublisherTest {
 	public void testSendOK(){
 		int expected = 0;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "kaixoo", 6);
+		int recived = publish.send(1, "kaixoo".getBytes(), 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
@@ -47,7 +47,7 @@ public class PublisherTest {
 	public void testSendSmallLength(){
 		int expected = 1;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "kaixoo", 4);
+		int recived = publish.send(1, "kaixoo".getBytes(), 4);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
@@ -56,7 +56,7 @@ public class PublisherTest {
     public void testSendBigLength(){
         int expected = 1;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaixoo", 8);
+        int recived = publish.send(1, "kaixoo".getBytes(), 8);
         org.junit.Assert.assertEquals(expected, recived);
         
     }
@@ -65,7 +65,7 @@ public class PublisherTest {
     public void testSendSmallMsg(){
         int expected = 1;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaix", 6);
+        int recived = publish.send(1, "kaix".getBytes(), 6);
         org.junit.Assert.assertEquals(expected, recived);
         
     }
@@ -74,7 +74,7 @@ public class PublisherTest {
     public void testSendBigMsg(){
         int expected = 1;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaixoooo", 6);
+        int recived = publish.send(1, "kaixoooo".getBytes(), 6);
         org.junit.Assert.assertEquals(expected, recived);
         
     }
@@ -83,7 +83,7 @@ public class PublisherTest {
 	public void testSendLengthNum(){
 		int expected = -1;
 		publish.iniciarConexion(fichConfigBad);
-		int recived = publish.send(1, "kaixoo", 6);
+		int recived = publish.send(1, "kaixoo".getBytes(), 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}

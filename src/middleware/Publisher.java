@@ -32,10 +32,10 @@ public class Publisher {
 	 * @param len Tamaño del texto enviado
 	 * @return 0 = mensaje enviado correctamente, 1 = longitud distinta a la del fichero de configuración, -1 = error desconocido
 	 */
-	public int send(int id, String mensaje, int len) {
+	public int send(int id, byte [] mensaje, int len) {
 		int resultado;
-		if((id<PsPort.MAXDATOS)&&(len == pPort.dataLenght.get(id)) && (pPort.dataLenght.get(id) == mensaje.length())){
-			if(pPort.publish(id, mensaje.getBytes())){
+		if((id<PsPort.MAXDATOS)&&(len == pPort.dataLenght.get(id)) && (pPort.dataLenght.get(id) == mensaje.length)){
+			if(pPort.publish(id, mensaje)){
 				resultado = 0;
 			}else{
 				resultado = -1;

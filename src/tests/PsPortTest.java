@@ -93,15 +93,15 @@ public class PsPortTest extends EasyMockSupport{
 	
 	@Test
 	public void testGetLastSample() throws InterruptedException{
-	    String expected = "kaixoo";
+	    byte[] expected = "kaixoo".getBytes();
 	    publisher.iniciarConexion("exceptionTest2.conf");
 	    suscriber.iniciarConexion("exceptionTest2.conf");
 	    suscriber.suscribirseADato(1);
 	    suscriber.escuchar();
 	    publisher.send(1, expected, 6);
 	    Thread.sleep(10);
-	    String actual = suscriber.obtenerDato(1, 6);
-	    assertEquals(expected, actual);
+	    byte[] actual = suscriber.obtenerDato(1, 6);
+	    assertArrayEquals(expected, actual);
 	}
 	
 	@Test

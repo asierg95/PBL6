@@ -24,7 +24,7 @@ public class Emisor {
 			id = Integer.valueOf(teclado.next());
 			System.out.println("Cual es la longitud del dato?");
 			len = Integer.valueOf(teclado.next());
-			respuesta = publicador.send(id, mensaje, len);
+			respuesta = publicador.send(id, mensaje.getBytes(), len);
 			System.out.println(respuesta);
 		}
 		

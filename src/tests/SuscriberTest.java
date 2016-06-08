@@ -57,12 +57,12 @@ public class SuscriberTest {
 		suscriber.suscribirseADato(idDato);
 		suscriber.escuchar();
 		publish.iniciarConexion(fichConfigGood);
-		publish.send(idDato, "kaixoo", 6);
-		String expected = "kaixoo";
+		publish.send(idDato, "kaixoo".getBytes(), 6);
+		byte[] expected = "kaixoo".getBytes();
 		Thread.sleep(10);
-		String actual = suscriber.obtenerDato(idDato, 6);
+		byte[] actual = suscriber.obtenerDato(idDato, 6);
 		
-		org.junit.Assert.assertEquals(expected, actual);
+		org.junit.Assert.assertArrayEquals(expected, actual);
 	}
 	
 	@Test
@@ -71,11 +71,11 @@ public class SuscriberTest {
 		suscriber.suscribirseADato(idDato);
 		suscriber.escuchar();
 		publish.iniciarConexion(fichConfigGood);
-		publish.send(idDato, "kaixoo", 6);
-		String expected = "-1";
+		publish.send(idDato, "kaixoo".getBytes(), 6);
+		byte[] expected = "-1".getBytes();
 		Thread.sleep(10);
-		String actual = suscriber.obtenerDato(idDato, 4);
+		byte[] actual = suscriber.obtenerDato(idDato, 4);
 		
-		org.junit.Assert.assertEquals(expected, actual);
+		org.junit.Assert.assertArrayEquals(expected, actual);
 	}
 }

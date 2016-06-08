@@ -42,12 +42,12 @@ public class Suscriber {
 	 * @param lenght la longitud del dato que se quiere obtener
 	 * @return el ultimo dato publicado
 	 */
-	public String obtenerDato(int idDato, int lenght){
-		String dato = port.getLastSample(idDato);
-		if(dato.length() == lenght){
+	public byte[] obtenerDato(int idDato, int lenght){
+		byte[] dato = port.getLastSample(idDato);
+		if(dato.length == lenght){
 			return dato;
 		}else{
-			return "-1";
+			return "-1".getBytes();
 		}
 	}
 	
