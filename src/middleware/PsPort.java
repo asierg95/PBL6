@@ -272,7 +272,7 @@ public class PsPort {
     private void inicializarVariablesFichero(String line) {
         int longitud = 0;
         String ip;
-        String[] split;
+        String[] split = null;
         
         try{
         split = line.split(SEPARADORMENSAJE);
@@ -304,7 +304,7 @@ public class PsPort {
 	            break;
 	        }
         }catch(ArrayIndexOutOfBoundsException e){
-        	LOGGER.info("ATENCION: Uno o mas datos del fichero de configuracion estan mal introducidos");
+        	LOGGER.info("El dato " +split[0]+ " del fichero de configuracion esta mal introducido");
         }		  
     }
     
