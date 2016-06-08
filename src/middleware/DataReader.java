@@ -16,7 +16,6 @@ public class DataReader extends Thread{
 	private boolean exit = false;
 	private PsPort port;
     private Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-    private String logPath;
 	
 	/**
 	 * DataReader constructor

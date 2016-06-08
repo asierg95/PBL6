@@ -38,7 +38,7 @@ public class PsPort {
     private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
     
     private MulticastSocket conexion;
-    private int port, maxlength;
+    private int port, maxlength, id = INTFALLO;
     private String keyString;
 	
     private ArrayList<String> ipMulticast;
@@ -73,10 +73,10 @@ public class PsPort {
             LOGGER.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();  
             fh.setFormatter(formatter);
-        } catch (SecurityException e) {  
-            e.printStackTrace();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
+        } catch (SecurityException e) {   
+            LOGGER.info("No se ha podido crear el fichero de log");
+        } catch (NullPointerException | IOException e) {    
+            LOGGER.info("No se ha podido crear el fichero de log");
         } 
     }
 
@@ -114,10 +114,7 @@ public class PsPort {
             try {
                 InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
                 mensaje = crearMensaje(idData, data);
-                byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
-                
-                System.out.println(mensajeEncriptado.hashCode());
-                
+                byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);                
                 DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulti , port);
                 
                 conexion.send(paquete);
@@ -146,14 +143,9 @@ public class PsPort {
         SecretKey clave;
               
         clave = crearClaveCifrado(keyString);
-        System.out.println("Clave: " + clave);
         cipher = inicializarCipher(mode, clave);
-        System.out.println("Cipher: " + cipher);
         mensajeCifradoDescifrado = cifradorDescifradorBytes(mensajeInicial, cipher);
-        
-        System.out.println("Mensaje inicial: " + mensajeInicial);
-        System.out.println("Mensaje cifrado: " + mensajeCifradoDescifrado);
-        
+
         return mensajeCifradoDescifrado;
     }
 
@@ -278,7 +270,7 @@ public class PsPort {
     } 
     
     private void inicializarVariablesFichero(String line) {
-        int longitud = 0,  id = INTFALLO;
+        int longitud = 0;
         String ip;
         String[] split;
         
@@ -367,8 +359,6 @@ public class PsPort {
         hashRecibido = leerHashMensaje(arrayMensaje);
         combinadoIdMensaje = idDato +SEPARADORMENSAJE+ mensaje;
         hashCalculado = combinadoIdMensaje.hashCode();
-        System.out.println("calculado = " + hashCalculado);
-        System.out.println("recibido = " + hashRecibido);
         if(hashRecibido == hashCalculado){
             datos.set(idDato, mensaje);
         }
