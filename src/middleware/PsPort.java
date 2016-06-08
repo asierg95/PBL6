@@ -284,6 +284,7 @@ public class PsPort {
 	            break;
 	        case "clave":
 	            keyString = split[1];
+	            comprobarKeyFichero(keyString);
 	            break;
 	        case "maxlength":
 	            maxlength = Integer.valueOf(split[1]) + MAXLENGHTHASH;
@@ -307,10 +308,21 @@ public class PsPort {
 	        }
         }catch(ArrayIndexOutOfBoundsException e){
         	LOGGER.info("El dato " +split[0]+ " del fichero de configuracion esta mal introducido");
-        }		  
+        }catch(NumberFormatException e){
+	    	LOGGER.info("El dato " +split[0]+ " del fichero de configuracion esta mal introducido");
+	    	System.exit(0);
+        }
     }
     
-    /**
+    private void comprobarKeyFichero(String keyString2) {
+		if(keyString2.length()!=24){
+			LOGGER.info("La clave de encriptado/desencriptado introducida en el fichero tiene que contener 24 caracteres");
+	    	System.exit(0);
+		}
+		
+	}
+
+	/**
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
