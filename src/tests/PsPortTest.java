@@ -2,8 +2,6 @@ package tests;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
@@ -11,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.crypto.Cipher;
-import static org.hamcrest.CoreMatchers.is;
 
 import org.easymock.EasyMockSupport;
 import org.junit.Before;
