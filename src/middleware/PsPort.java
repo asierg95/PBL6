@@ -44,8 +44,8 @@ public class PsPort {
     private String keyString;
 	
     private ArrayList<String> ipMulticast;
-    ArrayList<byte[]> datos;
-    ArrayList<Integer> dataLenght;
+    private ArrayList<byte[]> datos;
+    private ArrayList<Integer> dataLenght;
     private ArrayList<InetAddress> grupoMulticast;
 	
     private String logPath;
@@ -57,7 +57,7 @@ public class PsPort {
      * @param direccionFichero direccion del fichero de configuracion
      */
     PsPort(String direccionFichero){
-        dataLenght = new ArrayList<>(Collections.nCopies(MAXDATOS, 0));
+        setDataLenght(new ArrayList<>(Collections.nCopies(MAXDATOS, 0)));
         ipMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, ""));
         datos = new ArrayList<>(Collections.nCopies(MAXDATOS, "-1".getBytes()));
         grupoMulticast = new ArrayList<>(Collections.nCopies(MAXDATOS, null));
@@ -301,7 +301,7 @@ public class PsPort {
 	            break;
 	        case "long":
 	            longitud = Integer.valueOf(split[1]);
-	            dataLenght.set(id, longitud);
+	            getDataLenght().set(id, longitud);
 	            break;
 	        default:
 	            break;
@@ -433,4 +433,12 @@ public class PsPort {
         
         return mensaje;
     }
+
+	public ArrayList<Integer> getDataLenght() {
+		return dataLenght;
+	}
+
+	public void setDataLenght(ArrayList<Integer> dataLenght) {
+		this.dataLenght = dataLenght;
+	}
 }
