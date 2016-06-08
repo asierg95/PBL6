@@ -31,25 +31,26 @@ import javax.crypto.spec.DESedeKeySpec;
  */
 public class PsPort {
 	
-	static final int MAXDATOS = 300;
-    static final String SEPARADORMENSAJE = "=";
-    static final int INTFALLO = -1;
-    static final int MAXLENGHTHASH = 50;
+    static final int MAXDATOS = 300;
+    private static final String SEPARADORMENSAJE = "=";
+    private static final int INTFALLO = -1;
+    private static final int MAXLENGHTHASH = 50;
     private static final Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-    FileHandler fh;
     
-    MulticastSocket conexion;
-    int port, id = INTFALLO, maxlength;
-    String keyString;
+    private MulticastSocket conexion;
+    private int port;
+    private int maxlength;
+    private int id = INTFALLO;
+    private String keyString;
 	
-    ArrayList<String> ipMulticast;
+    private ArrayList<String> ipMulticast;
     ArrayList<byte[]> datos;
     ArrayList<Integer> dataLenght;
-    ArrayList<InetAddress> grupoMulticast;
+    private ArrayList<InetAddress> grupoMulticast;
 	
-    String logPath;
+    private String logPath;
 
-    boolean exit;
+    private boolean exit;
 		
     /**
      * Constructor PsPort
@@ -68,6 +69,7 @@ public class PsPort {
      * Inicializa el logger que creara los logs y los guardara en ficheros
      */
     private void initiliceLogger() {
+        FileHandler fh;
     	try {  
             fh = new FileHandler(logPath);
             LOGGER.addHandler(fh);
@@ -109,19 +111,20 @@ public class PsPort {
         boolean enviado = false;
         byte[] mensaje;
         
+
         if(data.length < (maxlength - MAXLENGHTHASH)){
             try {
                 InetAddress grupoMulti = InetAddress.getByName(ipMulticast.get(idData));
                 mensaje = crearMensaje(idData, data);
-                byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);
-                
+                byte[] mensajeEncriptado = encriptarDesencriptarMensaje(mensaje, Cipher.ENCRYPT_MODE);                
                 DatagramPacket paquete = new DatagramPacket(mensajeEncriptado, mensajeEncriptado.length, grupoMulti , port);
                 
                 conexion.send(paquete);
                 enviado = true;
                 
-            } catch (IllegalArgumentException | IOException e) {
-                LOGGER.info(e.getMessage());
+            } catch (NullPointerException | IllegalArgumentException | IOException e) {
+                LOGGER.info("El mensaje no se ha podido publicar");
+    
             }
         }
         
@@ -144,7 +147,7 @@ public class PsPort {
         clave = crearClaveCifrado(keyString);
         cipher = inicializarCipher(mode, clave);
         mensajeCifradoDescifrado = cifradorDescifradorBytes(mensajeInicial, cipher);
-        
+
         return mensajeCifradoDescifrado;
     }
 
@@ -159,8 +162,8 @@ public class PsPort {
         
         try {
             mensajeCifradoDescifrado = cipher.doFinal(mensaje);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            LOGGER.info(e.getMessage());
+        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException e) {
+            LOGGER.info("Error al cifrar el mensaje, compruebe la clave utilizada");
         }
         return mensajeCifradoDescifrado;
     }
@@ -178,7 +181,7 @@ public class PsPort {
             cipher = Cipher.getInstance("DESede");
             cipher.init(encriptMode, clave);
             } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
-                LOGGER.info(e.getMessage());
+                LOGGER.info("Error al inicializar el cifrador, comprueve la clave");
             }
         
         return cipher;
@@ -197,7 +200,7 @@ public class PsPort {
             factory = SecretKeyFactory.getInstance("DESede");
             clave = factory.generateSecret(new DESedeKeySpec(keyString.getBytes()));
             } catch (InvalidKeyException | InvalidKeySpecException | NoSuchAlgorithmException e) {
-                LOGGER.info(e.getMessage());
+                LOGGER.info("Error al crear la clave del cifrador, comprueve la clave");
             }
         
         return clave;
@@ -247,7 +250,7 @@ public class PsPort {
             conexion = new MulticastSocket(puertoConexion);
             conexionCreada = true;
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("No se ha podido crear la conexion, compruebe el puerto en el fichero de configuracion");
         }
         return conexionCreada;
     }
@@ -264,14 +267,14 @@ public class PsPort {
                 inicializarVariablesFichero(line);
             }
         } catch (IOException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("Error al inicializar la configuracion, compruebe que el fichero");
         }
     } 
     
     private void inicializarVariablesFichero(String line) {
         int longitud = 0;
         String ip;
-        String[] split;
+        String[] split = null;
         
         try{
         split = line.split(SEPARADORMENSAJE);
@@ -303,7 +306,7 @@ public class PsPort {
 	            break;
 	        }
         }catch(ArrayIndexOutOfBoundsException e){
-        	LOGGER.info(e.getMessage());
+        	LOGGER.info("El dato " +split[0]+ " del fichero de configuracion esta mal introducido");
         }		  
     }
     
@@ -311,7 +314,7 @@ public class PsPort {
      * Inicia el hilo que escucha los datos que se estan publicando
      */
     public void escuchar() {
-        DataReader dataReader = new DataReader(this, conexion, maxlength, SEPARADORMENSAJE, LOGGER);
+        DataReader dataReader = new DataReader(this, conexion, maxlength, LOGGER);
         dataReader.start();
     }
     
@@ -329,7 +332,7 @@ public class PsPort {
 		    conexion.joinGroup(grupoMulticast.get(idDato));
 		    adecuadamenteSuscrito = true;
         } catch (IOException e) {
-		    LOGGER.info(e.getMessage());
+		    LOGGER.info("No se ha podido suscribir al dato " +idDato+ " correctamente");
         }
         return adecuadamenteSuscrito;
     }
@@ -357,7 +360,6 @@ public class PsPort {
         hashRecibido = leerHashMensaje(arrayMensaje);
         combinadoIdMensaje = idDato +SEPARADORMENSAJE+ mensaje;
         hashCalculado = combinadoIdMensaje.hashCode();
-        
         if(hashRecibido == hashCalculado){
             datos.set(idDato, mensaje.getBytes());
         }
@@ -374,7 +376,7 @@ public class PsPort {
         try {
             mensaje = new String (datoByte, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.info("Error al crear el mensaje");
         }
         return mensaje;
     }

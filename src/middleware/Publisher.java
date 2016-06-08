@@ -8,7 +8,7 @@ package middleware;
  */
 public class Publisher {
 	
-	PsPort pPort;
+    private PsPort pPort;
 
 	/**
 	 * Crea una clase con los valores del fichero de configuración e inicia la conexion.
@@ -30,18 +30,13 @@ public class Publisher {
 	 * @param id El canal por el que se van a mandar los mensajes
 	 * @param mensaje El texto que se va a enviar
 	 * @param len Tamaño del texto enviado
-	 * @return 0 = mensaje enviado correctamente, 1 = longitud distinta a la del fichero de configuración, -1 = error desconocido
+	 * @return true -> el mensaje se envia correctamente, false -> el mensaje no se ha enviado
 	 */
-	public int send(int id, byte [] mensaje, int len) {
-		int resultado;
-		if((id<PsPort.MAXDATOS)&&(len == pPort.dataLenght.get(id)) && (pPort.dataLenght.get(id) == mensaje.length)){
-			if(pPort.publish(id, mensaje)){
-				resultado = 0;
-			}else{
-				resultado = -1;
-			}
-		}else{
-			resultado = 1;
+	public boolean send(int id, byte [] mensaje, int len) {
+		boolean resultado = false;
+		int lenght = pPort.dataLenght.get(id);
+		if((len == lenght) && (lenght == mensaje.length) && (pPort.publish(id, mensaje))){
+				resultado = true;
 		}
 		return resultado;
 	}	

@@ -34,7 +34,7 @@ public class DataReaderTest extends EasyMockSupport{
 	public void testCopiarByteArray() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException, UnsupportedEncodingException{
 		String expected = "prueba";
 		String mensaje = "prueba";
-		DataReader datareader = new DataReader(null, null, 100, "=",null);
+		DataReader datareader = new DataReader(null, null, 100,null);
 		
 		Method copiarByteArray = datareader.getClass().getDeclaredMethod("copiarByteArray", byte[].class, int.class);
 		copiarByteArray.setAccessible(true);
@@ -46,7 +46,7 @@ public class DataReaderTest extends EasyMockSupport{
 	
 	@Test
 	public void testEjecutar(){
-		DataReader datareader = new DataReader(null, null, 100, "=", null);
+		DataReader datareader = new DataReader(null, null, 100, null);
 		datareader.setExit(true);
 		
 		datareader.ejecutar();
@@ -61,7 +61,7 @@ public class DataReaderTest extends EasyMockSupport{
 		constructor.setAccessible(true);
 		PsPort port = constructor.newInstance("middleware.conf");
 		
-		DataReader dr = new DataReader(port, null, 100, "=",null);
+		DataReader dr = new DataReader(port, null, 100,null);
 		PsPort drMock;
 		
 		int hash1 = datoTest.hashCode();

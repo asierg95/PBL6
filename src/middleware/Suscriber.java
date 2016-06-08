@@ -11,18 +11,20 @@ package middleware;
  */
 
 public class Suscriber {
-	PsPortFactory conexion;
-	PsPort port;
+    private PsPort port;
 
 	/**
 	 * Inicia la conexion socket con la configuracion recogida del fichero
 	 * @param direccionFicheroConfiguracion fichero de configuracion
 	 */
 	public boolean iniciarConexion(String direccionFicheroConfiguracion) {
+	    PsPortFactory conexion;
 		boolean respuesta;
+		
 		conexion = new PsPortFactory();
 		port = conexion.getPort(direccionFicheroConfiguracion);
 		respuesta = port.start();
+		
 		return respuesta;
 	}
 

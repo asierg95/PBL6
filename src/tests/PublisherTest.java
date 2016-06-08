@@ -36,54 +36,57 @@ public class PublisherTest {
 	
 	@Test
 	public void testSendOK(){
-		int expected = 0;
+		boolean expected = true;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "kaixoo".getBytes(), 6);
+		boolean recived = publish.send(1, "kaixoo".getBytes(), 6);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
 	
 	@Test
 	public void testSendSmallLength(){
-		int expected = 1;
+	    boolean expected = false;
 		publish.iniciarConexion(fichConfigGood);
-		int recived = publish.send(1, "kaixoo".getBytes(), 4);
+		boolean recived = publish.send(1, "kaixoo".getBytes(), 4);
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}
 	
 	@Test
     public void testSendBigLength(){
-        int expected = 1;
+	    boolean expected = false;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaixoo".getBytes(), 8);
+        boolean recived = publish.send(1, "kaixoo".getBytes(), 8);
+
         org.junit.Assert.assertEquals(expected, recived);
         
     }
 	
 	@Test
     public void testSendSmallMsg(){
-        int expected = 1;
+	    boolean expected = false;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaix".getBytes(), 6);
+        boolean recived = publish.send(1, "kaix".getBytes(), 6);
+
         org.junit.Assert.assertEquals(expected, recived);
         
     }
     
     @Test
     public void testSendBigMsg(){
-        int expected = 1;
+        boolean expected = false;
         publish.iniciarConexion(fichConfigGood);
-        int recived = publish.send(1, "kaixoooo".getBytes(), 6);
+        boolean recived = publish.send(1, "kaixoooo".getBytes(), 6);
         org.junit.Assert.assertEquals(expected, recived);
         
     }
 	
 	@Test
 	public void testSendLengthNum(){
-		int expected = -1;
+	    boolean expected = false;
 		publish.iniciarConexion(fichConfigBad);
-		int recived = publish.send(1, "kaixoo".getBytes(), 6);
+		boolean recived = publish.send(1, "kaixoo".getBytes(), 6);
+
 		org.junit.Assert.assertEquals(expected, recived);
 		
 	}

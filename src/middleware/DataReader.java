@@ -3,7 +3,6 @@ package middleware;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 /**
@@ -12,14 +11,11 @@ import java.util.logging.Logger;
  *
  */
 public class DataReader extends Thread{
-	MulticastSocket conexion;
-	int maxLenght;
+    private MulticastSocket conexion;
+    private int maxLenght;
 	private boolean exit = false;
-	String separadorMensaje;
-	PsPort port;
+	private PsPort port;
     private Logger LOGGER = Logger.getLogger(PsPort.class.getName());
-	FileHandler fh;
-	String logPath;
 	
 	/**
 	 * DataReader constructor
@@ -29,12 +25,11 @@ public class DataReader extends Thread{
 	 * @param separadorMensaje
 	 */
 	
-	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, String separadorMensaje, Logger LOGGER) {
+	public DataReader(PsPort port, MulticastSocket conexion, int maxLenght, Logger LOGGER) {
 		this.LOGGER = LOGGER;
 		this.port = port;
 		this.conexion = conexion;
 		this.maxLenght = maxLenght;
-		this.separadorMensaje = separadorMensaje;
 	}
 	
 	@Override
@@ -91,13 +86,11 @@ public class DataReader extends Thread{
 	 * @return longitud de los datos utiles del array
 	 */
 	private static int longitudByteArray(byte[] datoByteCompleto) {
-		boolean exitWhile = false;
 		int longitud = 0;
-		while(exitWhile!=true && datoByteCompleto[longitud] != '\0'){
+
+		int longMax = datoByteCompleto.length;
+		while(longitud != longMax && datoByteCompleto[longitud] != '\0'){
 			longitud++;
-			if(longitud == datoByteCompleto.length){
-				exitWhile = true;
-			}
 		}
 		return longitud;
 	}
