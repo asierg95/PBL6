@@ -73,10 +73,10 @@ public class PsPort {
             LOGGER.addHandler(fh);
             SimpleFormatter formatter = new SimpleFormatter();  
             fh.setFormatter(formatter);
-        } catch (SecurityException e) {  
-            e.printStackTrace();  
+        } catch (SecurityException | NullPointerException e) {  
+            LOGGER.info("No se ha introducido una direccion del fichero de log correcta");  
         } catch (IOException e) {  
-            e.printStackTrace();  
+            LOGGER.info("No se ha introducido una direccion del fichero de log correcta");  
         } 
     }
 
@@ -297,14 +297,13 @@ public class PsPort {
 	            break;
 	        case "long":
 	            longitud = Integer.valueOf(split[1]);
-	            dataLenght.add(id, longitud);
+	            dataLenght.set(id, longitud);
 	            break;
 	        default:
 	            break;
 	        }
         }catch(ArrayIndexOutOfBoundsException e){
         	LOGGER.info(e.getMessage());
-        	throw new ArrayIndexOutOfBoundsException("arrayIndexOutOfBounds");
         }		  
     }
     

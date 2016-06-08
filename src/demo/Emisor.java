@@ -27,8 +27,6 @@ public class Emisor {
 			respuesta = publicador.send(id, mensaje.getBytes(), len);
 			System.out.println(respuesta);
 		}
-		
 	}
-
 }
 
