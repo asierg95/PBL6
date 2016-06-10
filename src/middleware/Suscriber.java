@@ -39,6 +39,16 @@ public class Suscriber {
 	}
 	
 	/**
+     * Se desuscribe a datos
+     * @param idDato el id del dato al que se va a desuscribir
+     */
+	public boolean desuscribirseADato(int idDato) {
+        boolean respuesta;
+        respuesta = port.desuscribirADato(idDato);
+        return respuesta;
+    }
+	
+	/**
 	 * Obtener el ultimo dato publicado
 	 * @param idDato id del dato que se quiere obtener
 	 * @param lenght la longitud del dato que se quiere obtener
