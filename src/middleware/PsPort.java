@@ -42,7 +42,8 @@ public class PsPort {
     private int maxlength;
     private int id = INTFALLO;
     private String keyString;
-	
+	private String ipDispositivo;
+    
     private ArrayList<String> ipMulticast;
     private ArrayList<byte[]> datos;
     private ArrayList<Integer> dataLenght;
@@ -248,7 +249,7 @@ public class PsPort {
         
         try {
             conexion = new MulticastSocket(puertoConexion);
-            conexion.setInterface(InetAddress.getByName("172.17.223.94"));
+            conexion.setInterface(InetAddress.getByName(ipDispositivo));
             conexionCreada = true;
         } catch (IOException e) {
             LOGGER.info("No se ha podido crear la conexion, compruebe el puerto en el fichero de configuracion");
@@ -303,6 +304,9 @@ public class PsPort {
 	        case "long":
 	            longitud = Integer.valueOf(split[1]);
 	            getDataLenght().set(id, longitud);
+	            break;
+	        case "ipDispositivo":
+	            ipDispositivo = split[1];
 	            break;
 	        default:
 	            break;
