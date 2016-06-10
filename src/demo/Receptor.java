@@ -26,7 +26,7 @@ public class Receptor {
 			Thread.sleep(6000);
 			String dato1 = new String (suscriptor.obtenerDato(0, 8), "UTF-8");
 			System.out.println("Receptor recibe: "+dato1);
-			String dato2 = new String (suscriptor.obtenerDato(1, 6), "UTF-8");
+			String dato2 = new String (suscriptor.obtenerDato(1, 4), "UTF-8");
 			System.out.println("Receptor2 recibe: "+dato2);
 		}
 	}
