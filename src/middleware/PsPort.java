@@ -446,4 +446,19 @@ public class PsPort {
 	public void setDataLenght(ArrayList<Integer> dataLenght) {
 		this.dataLenght = dataLenght;
 	}
+
+    public boolean desuscribirADato(int idDato) {
+        InetAddress ip = null;
+        boolean adecuadamenteDesuscrito = false;
+        
+        try {
+            ip = InetAddress.getByName(ipMulticast.get(idDato));
+            grupoMulticast.set(idDato, ip);
+            conexion.leaveGroup(grupoMulticast.get(idDato));
+            adecuadamenteDesuscrito = true;
+        } catch (IOException e) {
+            LOGGER.info("No se ha podido desuscribir al dato " +idDato+ " correctamente");
+        }
+        return adecuadamenteDesuscrito;
+    }
 }
